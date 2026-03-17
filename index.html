@@ -1243,7 +1243,7 @@ function renderForecast() {
   // Gridlines — auto-scale
   const gridStep = maxValue > 80000 ? 20000 : 10000;
   const gridlineValues = [];
-  for (let v = 0; v <= maxValue * 1.05; v += gridStep) { gridlineValues.push(v); }
+  for (let v = gridStep; v <= maxValue * 1.05; v += gridStep) { gridlineValues.push(v); }
   let gridHTML = '<div class="chart-gridlines">';
   gridlineValues.forEach(v => {
     const bottom = (v / (maxValue * 1.15)) * chartHeight;
