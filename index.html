@@ -646,10 +646,10 @@ const CLIENTS = [
     monthlyValue: 42367,
     startDate: '2025-11',
     endDate: '2026-05',
-    renewalStatus: 'no-conversation',
-    renewalLabel: 'No Conversation',
+    renewalStatus: 'early-conversation',
+    renewalLabel: 'Early Conversation',
     contact: 'Susan Halteman',
-    notes: '6 payments of $42,367. Strategic advisory + dev ops.'
+    notes: '6 payments of $42,367. Strategic advisory + dev ops. Renewal proposal in progress.'
   },
   {
     name: 'Obama Foundation',
@@ -714,6 +714,20 @@ const PIPELINE = [
     proposalEndDate: '2026-10',
     proposalSent: true
   }
+  {
+    name: 'NYU',
+    fullName: 'New York University',
+    stage: 'discovery',
+    dealValue: 720000, // midpoint estimate: $30K/mo x 24 months
+    monthlyValue: 30000, // midpoint of $20K-$40K range
+    duration: '12-36 months',
+    probability: 20,
+    contact: 'Via Kaysee Gilmore',
+    notes: 'Awaiting contract details from Kaysee. Range: $20K-$40K/mo, 12-36 months. Could start April 2026.',
+    proposalStartDate: null,  // no proposal sent yet — not included in forecast
+    proposalEndDate: null,
+    proposalSent: false
+  },
   // Add more prospects here as they enter the pipeline:
   // {
   //   name: 'Org Name',
