@@ -752,142 +752,32 @@
 
 <script>
 // ============================================================
-// DATA CONFIGURATION
-// Edit this section to update the tracker
+// DATA LOADED FROM data.json (single source of truth)
+// The pipeline-tracker agent reads and writes data.json directly.
 // ============================================================
 
-const TODAY = new Date('2026-03-17');
-const LAST_UPDATED = '2026-03-17';
+let TODAY, LAST_UPDATED, CLIENTS, PIPELINE, BD_STAGES;
 
-// Active client engagements
-const CLIENTS = [
-  {
-    name: 'ALDF',
-    fullName: 'Animal Legal Defense Fund',
-    monthlyValue: 42367,
-    startDate: '2025-11',
-    endDate: '2026-05',
-    renewalStatus: 'proposal-sent',
-    renewalLabel: 'Proposal Sent',
-    contact: 'Susan Halteman',
-    notes: '6 payments of $42,367. Strategic advisory + dev ops. Renewal proposal in progress.'
-  },
-  {
-    name: 'Obama Foundation',
-    fullName: 'The Obama Foundation',
-    monthlyValue: 20000,
-    startDate: '2025-06',
-    endDate: '2026-03',
-    renewalStatus: 'winding-down',
-    renewalLabel: 'Winding Down',
-    contact: 'Elizabeth Lach',
-    notes: 'Contract ends March 30. CDO transition support.'
-  },
-  {
-    name: 'CreativeMornings',
-    fullName: 'CreativeMornings',
-    monthlyValue: 10650,
-    startDate: '2025-06',
-    endDate: '2026-05',
-    renewalStatus: 'no-conversation',
-    renewalLabel: 'No Conversation',
-    contact: 'Tina Roth Eisenberg',
-    notes: 'Fundraising strategy advisor. Weekly calls with Tina.'
-  },
-  {
-    name: 'HFNY',
-    fullName: 'Hope for New York',
-    monthlyValue: 7200,
-    startDate: '2025-09',
-    endDate: '2026-03',
-    renewalStatus: 'winding-down',
-    renewalLabel: 'Winding Down',
-    contact: 'Judy & Freeman',
-    notes: 'Cohort training wrapping up. Final session late March.'
-  },
-  {
-    name: 'Apex for Youth',
-    fullName: 'Apex for Youth',
-    monthlyValue: 1667, // $10K total spread over 6 months (Jan-Jun)
-    startDate: '2026-01',
-    endDate: '2026-06',
-    renewalStatus: 'no-conversation',
-    renewalLabel: 'No Conversation',
-    contact: 'Wendy',
-    notes: 'Case for support development. $10K total, both invoiced Jan 2026.'
+async function loadData() {
+  try {
+    const resp = await fetch('data.json?v=' + Date.now());
+    const data = await resp.json();
+    TODAY = new Date();
+    LAST_UPDATED = data.lastUpdated;
+    CLIENTS = data.clients;
+    PIPELINE = data.pipeline;
+    BD_STAGES = data.bdStages;
+
+    document.getElementById('lastUpdated').textContent = LAST_UPDATED;
+    renderSummary();
+    renderGantt();
+    renderPipeline();
+    renderForecast();
+  } catch (e) {
+    console.error('Failed to load data.json:', e);
+    document.body.innerHTML = '<div style="text-align:center;padding:80px;font-family:sans-serif;color:#d4380d;"><h2>Failed to load pipeline data</h2><p>' + e.message + '</p></div>';
   }
-];
-
-// BD Pipeline prospects
-// Only include prospects with SENT proposals for revenue forecasting
-const PIPELINE = [
-  {
-    name: 'NABU',
-    fullName: 'NABU',
-    stage: 'verbal-commitment',
-    dealValue: 43648, // $5,456/mo x 8 months
-    monthlyValue: 5456,
-    duration: '8 months',
-    probability: 85,
-    contact: '',
-    notes: '$5,456/month for 8 months starting April 2026. Verbal commitment.',
-    proposalStartDate: '2026-04',
-    proposalEndDate: '2026-11',
-    proposalSent: true
-  },
-  {
-    name: 'NYU',
-    fullName: 'New York University',
-    stage: 'discovery',
-    dealValue: 720000, // midpoint estimate: $30K/mo x 24 months
-    monthlyValue: 30000, // midpoint of $20K-$40K range
-    duration: '12-36 months',
-    probability: 20,
-    contact: 'Caitie Gilmore',
-    notes: 'Awaiting contract details from Caitie. Range: $20K-$40K/mo, 12-36 months. Could start April 2026.',
-    proposalStartDate: '2026-04',  // estimated start — shows as BD potential (mint), not hard forecast
-    proposalEndDate: '2028-03',    // 24-month midpoint estimate
-    proposalSent: false
-  },
-  {
-    name: 'Cave Canem',
-    fullName: 'Cave Canem',
-    stage: 'discovery',
-    dealValue: 5000,
-    monthlyValue: 0,
-    duration: 'Project-based',
-    probability: 30,
-    contact: 'Hallie Hobson',
-    notes: 'Training delivered in July 2026 with pre-work and potential follow-up. ~$5K project.',
-    proposalStartDate: '2026-06',
-    proposalEndDate: '2026-08',
-    proposalSent: false
-  },
-  // Add more prospects here as they enter the pipeline:
-  // {
-  //   name: 'Org Name',
-  //   fullName: 'Full Organization Name',
-  //   stage: 'discovery', // discovery | proposal-sent | negotiation | verbal-commitment | closed-won | closed-lost
-  //   dealValue: 0,
-  //   monthlyValue: 0,
-  //   duration: '',
-  //   probability: 0,
-  //   contact: '',
-  //   notes: '',
-  //   proposalStartDate: null,
-  //   proposalEndDate: null,
-  //   proposalSent: false
-  // }
-];
-
-const BD_STAGES = [
-  { id: 'discovery', label: 'Discovery' },
-  { id: 'proposal-sent', label: 'Proposal Sent' },
-  { id: 'negotiation', label: 'Negotiation' },
-  { id: 'verbal-commitment', label: 'Verbal Commit' },
-  { id: 'closed-won', label: 'Closed Won' },
-  { id: 'closed-lost', label: 'Closed Lost' }
-];
+}
 
 // ============================================================
 // RENDERING LOGIC
@@ -1306,11 +1196,7 @@ function hideTooltip() {
 }
 
 // ---- Init ----
-document.getElementById('lastUpdated').textContent = LAST_UPDATED;
-renderSummary();
-renderGantt();
-renderPipeline();
-renderForecast();
+loadData();
 </script>
 
 </body>
