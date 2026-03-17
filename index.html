@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LPM Pipeline & Revenue Tracker</title>
+<style>
+  /* --- Font Loading --- */
+  @font-face {
+    font-family: 'King and Queen';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/King and Queen/KingandQueen-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'King and Queen';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/King and Queen/KingandQueen-SemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Work Sans';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/Work Sans/WorkSans-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Work Sans';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/Work Sans/WorkSans-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  /* --- CSS Variables --- */
+  :root {
+    --blueberry: #384BCF;
+    --cornflower: #717FEF;
+    --periwinkle: #C5CBFF;
+    --lime: #DFFF00;
+    --mint: #EBFFD6;
+    --gardenia: #FFFFF6;
+    --ink: #333333;
+    --font-display: 'King and Queen', Georgia, serif;
+    --font-body: 'Work Sans', system-ui, sans-serif;
+    --radius-pill: 100px;
+    --radius-card: 16px;
+  }
+
+  /* --- Reset --- */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--gardenia);
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* --- Hero --- */
+  .hero {
+    text-align: center;
+    padding: 60px 24px 40px;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 40px;
+    background: var(--lime);
+    border-radius: 2px;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 2.8rem;
+    color: var(--blueberry);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .hero .subhead {
+    font-size: 1.15rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 400;
+  }
+  .hero .last-updated {
+    font-size: 13px;
+    color: #999;
+    margin-top: 8px;
+  }
+
+  /* --- Arch Divider --- */
+  .arch-divider {
+    width: 120px;
+    height: 60px;
+    border: 3px solid var(--periwinkle);
+    border-bottom: none;
+    border-radius: 120px 120px 0 0;
+    margin: 0 auto 40px;
+  }
+
+  /* --- Revenue Summary Cards --- */
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto 50px;
+    padding: 0 24px;
+  }
+  .summary-card {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: var(--radius-card);
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .summary-card:hover {
+    box-shadow: 0 12px 40px rgba(56, 75, 207, 0.14);
+    transform: translateY(-2px);
+  }
+  .summary-card .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .summary-card .value {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--blueberry);
+    font-weight: 400;
+  }
+  .summary-card .sub {
+    font-size: 13px;
+    color: #999;
+    margin-top: 4px;
+  }
+  .summary-card.alert .value { color: #d4380d; }
+  .summary-card.good .value { color: #389e0d; }
+
+  /* --- Section Headers --- */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 0 24px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .section-header h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.8rem;
+    color: var(--blueberry);
+    letter-spacing: -0.01em;
+  }
+  .section-header .line {
+    flex: 1;
+    height: 2px;
+    background: var(--periwinkle);
+    border-radius: 1px;
+  }
+
+  /* --- Gantt Chart --- */
+  .gantt-container {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: var(--radius-card);
+    padding: 28px;
+    box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
+    overflow-x: auto;
+  }
+  .gantt-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+  }
+  .gantt-table th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #888;
+    font-weight: 600;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--periwinkle);
+    white-space: nowrap;
+  }
+  .gantt-table th.month-col {
+    text-align: center;
+    min-width: 70px;
+    padding: 8px 4px;
+  }
+  .gantt-table td {
+    padding: 10px 12px;
+    font-size: 14px;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(197, 203, 255, 0.4);
+  }
+  .gantt-table td.month-cell {
+    padding: 10px 2px;
+    position: relative;
+  }
+  .gantt-bar {
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.3px;
+    min-width: 100%;
+  }
+  .gantt-bar.active {
+    background: var(--blueberry);
+  }
+  .gantt-bar.winding-down {
+    background: linear-gradient(90deg, var(--blueberry), #888);
+  }
+  .gantt-bar.ending {
+    background: #d4380d;
+    opacity: 0.85;
+  }
+  .gantt-bar.potential {
+    background: var(--cornflower);
+    opacity: 0.5;
+    border: 2px dashed var(--blueberry);
+  }
+  .client-name {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .client-revenue {
+    color: var(--blueberry);
+    font-weight: 600;
+  }
+
+  /* --- Renewal Status Badges --- */
+  .renewal-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .renewal-badge.no-conversation { background: rgba(212, 56, 13, 0.1); color: #d4380d; }
+  .renewal-badge.early-conversation { background: rgba(250, 173, 20, 0.15); color: #ad6800; }
+  .renewal-badge.proposal-sent { background: rgba(56, 75, 207, 0.1); color: var(--blueberry); }
+  .renewal-badge.verbal-yes { background: rgba(56, 158, 13, 0.1); color: #389e0d; }
+  .renewal-badge.renewed { background: rgba(56, 158, 13, 0.2); color: #237804; }
+  .renewal-badge.winding-down { background: rgba(140, 140, 140, 0.15); color: #666; }
+  .renewal-badge.complete { background: rgba(140, 140, 140, 0.1); color: #999; }
+
+  /* --- BD Pipeline --- */
+  .pipeline-board {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+  }
+  .pipeline-column {
+    background: rgba(197, 203, 255, 0.15);
+    border-radius: var(--radius-card);
+    padding: 16px 12px;
+    min-height: 200px;
+  }
+  .pipeline-column-header {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #888;
+    font-weight: 700;
+    text-align: center;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--periwinkle);
+  }
+  .pipeline-card {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(56, 75, 207, 0.06);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .pipeline-card:hover {
+    box-shadow: 0 8px 24px rgba(56, 75, 207, 0.12);
+    transform: translateY(-1px);
+  }
+  .pipeline-card .org-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .pipeline-card .deal-value {
+    font-size: 13px;
+    color: var(--blueberry);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .pipeline-card .deal-detail {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.5;
+  }
+  .pipeline-card .probability {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(56, 75, 207, 0.08);
+    color: var(--blueberry);
+  }
+  .pipeline-empty {
+    text-align: center;
+    color: #bbb;
+    font-size: 13px;
+    padding: 24px 8px;
+    font-style: italic;
+  }
+
+  /* --- Revenue Forecast Chart --- */
+  .forecast-container {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: var(--radius-card);
+    padding: 28px;
+    box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
+  }
+  .chart-area {
+    position: relative;
+    height: 350px;
+    margin-top: 20px;
+  }
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    height: 300px;
+    gap: 8px;
+    padding-bottom: 0;
+    border-bottom: 2px solid var(--periwinkle);
+    position: relative;
+  }
+  .chart-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .chart-bar-stack {
+    width: 100%;
+    max-width: 60px;
+    display: flex;
+    flex-direction: column-reverse;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .chart-bar-stack:hover { opacity: 0.85; }
+  .chart-bar-segment {
+    width: 100%;
+    transition: height 0.5s ease;
+    position: relative;
+  }
+  .chart-bar-segment.confirmed { background: var(--blueberry); }
+  .chart-bar-segment.pipeline { background: var(--cornflower); opacity: 0.5; }
+  .chart-month-label {
+    font-size: 11px;
+    color: #888;
+    font-weight: 600;
+    margin-top: 8px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .chart-value-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--blueberry);
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  .chart-gridlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+  .chart-gridline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px dashed rgba(197, 203, 255, 0.6);
+  }
+  .chart-gridline-label {
+    position: absolute;
+    left: -50px;
+    font-size: 10px;
+    color: #aaa;
+    font-weight: 600;
+    transform: translateY(-50%);
+  }
+  .chart-legend {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+  }
+  .chart-legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+  }
+  .chart-legend-swatch.confirmed { background: var(--blueberry); }
+  .chart-legend-swatch.pipeline { background: var(--cornflower); opacity: 0.5; }
+
+  /* --- Tooltip --- */
+  .tooltip {
+    display: none;
+    position: fixed;
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 280px;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .tooltip.visible { display: block; }
+
+  /* --- Footer --- */
+  footer {
+    background: var(--periwinkle);
+    color: var(--blueberry);
+    padding: 40px 24px 24px;
+    margin-top: 60px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--blueberry);
+  }
+  .footer-brand .tagline {
+    font-family: var(--font-body);
+    font-size: 13px;
+    margin-top: 6px;
+    opacity: 0.7;
+  }
+  .footer-links {
+    text-align: center;
+  }
+  .footer-links a, .footer-contact a {
+    display: block;
+    color: var(--blueberry);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    margin-bottom: 6px;
+  }
+  .footer-links a:hover, .footer-contact a:hover { opacity: 1; }
+  .footer-contact { text-align: right; }
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 20px auto 0;
+    padding-top: 16px;
+    border-top: 1px solid rgba(56, 75, 207, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 13px;
+    opacity: 0.6;
+  }
+  .footer-bottom img { height: 18px; width: 18px; }
+
+  /* --- Edit Hint --- */
+  .edit-hint {
+    text-align: center;
+    font-size: 12px;
+    color: #bbb;
+    margin-top: 20px;
+    font-style: italic;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 1024px) {
+    .pipeline-board { grid-template-columns: repeat(3, 1fr); }
+    .summary-row { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .pipeline-board { grid-template-columns: 1fr 1fr; }
+    .summary-row { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; text-align: center; }
+    .footer-contact { text-align: center; }
+    .footer-links { text-align: center; }
+  }
+  @media (max-width: 480px) {
+    .pipeline-board { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>Pipeline & Revenue Tracker</h1>
+  <p class="subhead">Active engagements, renewal status, business development pipeline, and 12-month revenue forecast</p>
+  <p class="last-updated">Last updated: <span id="lastUpdated"></span></p>
+</section>
+
+<div class="arch-divider"></div>
+
+<!-- Summary Cards -->
+<div class="summary-row" id="summaryRow"></div>
+
+<!-- Active Clients Gantt -->
+<section class="section">
+  <div class="section-header">
+    <h2>Active Engagements</h2>
+    <div class="line"></div>
+  </div>
+  <div class="gantt-container">
+    <table class="gantt-table" id="ganttTable"></table>
+  </div>
+</section>
+
+<!-- BD Pipeline -->
+<section class="section">
+  <div class="section-header">
+    <h2>Business Development Pipeline</h2>
+    <div class="line"></div>
+  </div>
+  <div class="pipeline-board" id="pipelineBoard"></div>
+</section>
+
+<!-- Revenue Forecast -->
+<section class="section">
+  <div class="section-header">
+    <h2>12-Month Revenue Forecast</h2>
+    <div class="line"></div>
+  </div>
+  <div class="forecast-container">
+    <div class="chart-area" id="chartArea">
+      <div class="chart-bars" id="chartBars"></div>
+    </div>
+    <div class="chart-legend">
+      <div class="chart-legend-item"><div class="chart-legend-swatch confirmed"></div> Confirmed Revenue</div>
+      <div class="chart-legend-item"><div class="chart-legend-swatch pipeline"></div> Pipeline (Proposal Sent)</div>
+    </div>
+  </div>
+  <p class="edit-hint">Revenue forecast includes only confirmed contracts and proposals with defined terms.</p>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">LPM Consulting</div>
+      <p class="tagline">Pipeline & Revenue Intelligence</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/leyapmiller/" target="_blank">LinkedIn</a>
+      <a href="https://leyapm.com" target="_blank">Website</a>
+    </div>
+    <div class="footer-contact">
+      <a href="mailto:leya@leyapm.com">leya@leyapm.com</a>
+      <a href="https://calendar.app.google/Nfxd3vPv5pVtUvC29" target="_blank">Schedule a Call</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <img src="https://deploy-preview-1--lpm-consulting.netlify.app/uploads/Logos/Favicons/svg/Primary_Blue/Fav_Blue.svg" alt="LPM">
+    &copy; 2026 LPM Consulting. Internal use only.
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// DATA CONFIGURATION
+// Edit this section to update the tracker
+// ============================================================
+
+const TODAY = new Date('2026-03-17');
+const LAST_UPDATED = '2026-03-17';
+
+// Active client engagements
+const CLIENTS = [
+  {
+    name: 'ALDF',
+    fullName: 'Animal Legal Defense Fund',
+    monthlyValue: 42367,
+    startDate: '2025-11',
+    endDate: '2026-05',
+    renewalStatus: 'no-conversation',
+    renewalLabel: 'No Conversation',
+    contact: 'Susan Halteman',
+    notes: '6 payments of $42,367. Strategic advisory + dev ops.'
+  },
+  {
+    name: 'Obama Foundation',
+    fullName: 'The Obama Foundation',
+    monthlyValue: 20000,
+    startDate: '2025-06',
+    endDate: '2026-03',
+    renewalStatus: 'winding-down',
+    renewalLabel: 'Winding Down',
+    contact: 'Elizabeth Lach',
+    notes: 'Contract ends March 30. CDO transition support.'
+  },
+  {
+    name: 'CreativeMornings',
+    fullName: 'CreativeMornings',
+    monthlyValue: 10650,
+    startDate: '2025-06',
+    endDate: '2026-05',
+    renewalStatus: 'no-conversation',
+    renewalLabel: 'No Conversation',
+    contact: 'Tina Roth Eisenberg',
+    notes: 'Fundraising strategy advisor. Weekly calls with Tina.'
+  },
+  {
+    name: 'HFNY',
+    fullName: 'Hope for New York',
+    monthlyValue: 7200,
+    startDate: '2025-09',
+    endDate: '2026-03',
+    renewalStatus: 'winding-down',
+    renewalLabel: 'Winding Down',
+    contact: 'Judy & Freeman',
+    notes: 'Cohort training wrapping up. Final session late March.'
+  },
+  {
+    name: 'Apex for Youth',
+    fullName: 'Apex for Youth',
+    monthlyValue: 1667, // $10K total spread over 6 months (Jan-Jun)
+    startDate: '2026-01',
+    endDate: '2026-06',
+    renewalStatus: 'no-conversation',
+    renewalLabel: 'No Conversation',
+    contact: 'Wendy',
+    notes: 'Case for support development. $10K total, both invoiced Jan 2026.'
+  }
+];
+
+// BD Pipeline prospects
+// Only include prospects with SENT proposals for revenue forecasting
+const PIPELINE = [
+  {
+    name: 'NABU',
+    fullName: 'NABU',
+    stage: 'proposal-sent',
+    dealValue: 84300,
+    monthlyValue: 12200,
+    duration: '7 months',
+    probability: 60,
+    contact: '',
+    notes: 'SOW sent Feb 20, 2026. $12,200/month for 7 months.',
+    proposalStartDate: '2026-04',  // estimated start if closed
+    proposalEndDate: '2026-10',
+    proposalSent: true
+  }
+  // Add more prospects here as they enter the pipeline:
+  // {
+  //   name: 'Org Name',
+  //   fullName: 'Full Organization Name',
+  //   stage: 'discovery', // discovery | proposal-sent | negotiation | verbal-commitment | closed-won | closed-lost
+  //   dealValue: 0,
+  //   monthlyValue: 0,
+  //   duration: '',
+  //   probability: 0,
+  //   contact: '',
+  //   notes: '',
+  //   proposalStartDate: null,
+  //   proposalEndDate: null,
+  //   proposalSent: false
+  // }
+];
+
+const BD_STAGES = [
+  { id: 'discovery', label: 'Discovery' },
+  { id: 'proposal-sent', label: 'Proposal Sent' },
+  { id: 'negotiation', label: 'Negotiation' },
+  { id: 'verbal-commitment', label: 'Verbal Commit' },
+  { id: 'closed-won', label: 'Closed Won' },
+  { id: 'closed-lost', label: 'Closed Lost' }
+];
+
+// ============================================================
+// RENDERING LOGIC
+// ============================================================
+
+// Month helpers
+function monthKey(date) {
+  const d = typeof date === 'string' ? new Date(date + '-01') : date;
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+function monthLabel(key) {
+  const [y, m] = key.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[parseInt(m) - 1] + ' ' + y.slice(2);
+}
+function monthsBetween(start, end) {
+  const keys = [];
+  let [sy, sm] = start.split('-').map(Number);
+  const [ey, em] = end.split('-').map(Number);
+  while (sy < ey || (sy === ey && sm <= em)) {
+    keys.push(sy + '-' + String(sm).padStart(2, '0'));
+    sm++;
+    if (sm > 12) { sm = 1; sy++; }
+  }
+  return keys;
+}
+
+// Generate 12 months from current month
+function getForecastMonths() {
+  const months = [];
+  let y = TODAY.getFullYear();
+  let m = TODAY.getMonth() + 1;
+  for (let i = 0; i < 12; i++) {
+    months.push(y + '-' + String(m).padStart(2, '0'));
+    m++;
+    if (m > 12) { m = 1; y++; }
+  }
+  return months;
+}
+
+// Generate Gantt timeline months (from earliest start to 12 months out)
+function getGanttMonths() {
+  let earliest = '2099-12';
+  CLIENTS.forEach(c => { if (c.startDate < earliest) earliest = c.startDate; });
+  const forecastEnd = getForecastMonths().pop();
+  return monthsBetween(earliest, forecastEnd);
+}
+
+// ---- Summary Cards ----
+function renderSummary() {
+  const container = document.getElementById('summaryRow');
+  const currentMonth = monthKey(TODAY);
+
+  // Current monthly revenue
+  let currentRevenue = 0;
+  CLIENTS.forEach(c => {
+    if (c.startDate <= currentMonth && c.endDate >= currentMonth) {
+      currentRevenue += c.monthlyValue;
+    }
+  });
+
+  // Contracts ending within 60 days
+  let endingSoon = 0;
+  CLIENTS.forEach(c => {
+    const endParts = c.endDate.split('-');
+    const endDate = new Date(endParts[0], endParts[1] - 1, 28);
+    const diffDays = (endDate - TODAY) / (1000 * 60 * 60 * 24);
+    if (diffDays >= 0 && diffDays <= 60) endingSoon++;
+  });
+
+  // Pipeline value
+  let pipelineValue = 0;
+  PIPELINE.forEach(p => { if (p.stage !== 'closed-lost') pipelineValue += p.dealValue; });
+
+  // Weighted pipeline
+  let weightedPipeline = 0;
+  PIPELINE.forEach(p => { if (p.stage !== 'closed-lost' && p.stage !== 'closed-won') weightedPipeline += p.dealValue * (p.probability / 100); });
+
+  container.innerHTML = `
+    <div class="summary-card">
+      <div class="label">Current Monthly Revenue</div>
+      <div class="value">$${currentRevenue.toLocaleString()}</div>
+      <div class="sub">${CLIENTS.filter(c => c.startDate <= currentMonth && c.endDate >= currentMonth).length} active engagements</div>
+    </div>
+    <div class="summary-card ${endingSoon > 0 ? 'alert' : ''}">
+      <div class="label">Ending in 60 Days</div>
+      <div class="value">${endingSoon}</div>
+      <div class="sub">${endingSoon > 0 ? 'Renewal conversations needed' : 'No urgency'}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Pipeline Value</div>
+      <div class="value">$${pipelineValue.toLocaleString()}</div>
+      <div class="sub">${PIPELINE.filter(p => p.stage !== 'closed-lost' && p.stage !== 'closed-won').length} active opportunities</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Weighted Pipeline</div>
+      <div class="value">$${Math.round(weightedPipeline).toLocaleString()}</div>
+      <div class="sub">Probability-adjusted value</div>
+    </div>
+  `;
+}
+
+// ---- Gantt Chart ----
+function renderGantt() {
+  const table = document.getElementById('ganttTable');
+  const months = getGanttMonths();
+  const currentMonth = monthKey(TODAY);
+
+  // Header
+  let headerHTML = '<thead><tr>';
+  headerHTML += '<th style="min-width:140px">Client</th>';
+  headerHTML += '<th style="min-width:90px">Monthly</th>';
+  headerHTML += '<th style="min-width:120px">Renewal</th>';
+  months.forEach(m => {
+    const isCurrent = m === currentMonth;
+    headerHTML += `<th class="month-col" style="${isCurrent ? 'background:rgba(223,255,0,0.15);' : ''}">${monthLabel(m)}</th>`;
+  });
+  headerHTML += '</tr></thead>';
+
+  // Rows
+  let bodyHTML = '<tbody>';
+  CLIENTS.forEach(client => {
+    bodyHTML += '<tr>';
+    bodyHTML += `<td class="client-name">${client.name}</td>`;
+    bodyHTML += `<td class="client-revenue">$${client.monthlyValue.toLocaleString()}</td>`;
+    bodyHTML += `<td><span class="renewal-badge ${client.renewalStatus}">${client.renewalLabel}</span></td>`;
+
+    months.forEach(m => {
+      const isCurrent = m === currentMonth;
+      const isActive = m >= client.startDate && m <= client.endDate;
+      const isEndMonth = m === client.endDate;
+      const bgStyle = isCurrent ? 'background:rgba(223,255,0,0.08);' : '';
+
+      if (isActive) {
+        let barClass = 'active';
+        if (client.renewalStatus === 'winding-down') barClass = 'winding-down';
+        if (isEndMonth) barClass = 'ending';
+        bodyHTML += `<td class="month-cell" style="${bgStyle}"><div class="gantt-bar ${barClass}"
+          onmouseenter="showTooltip(event, '${client.fullName}\\n${monthLabel(m)}: $${client.monthlyValue.toLocaleString()}\\n${client.notes}')"
+          onmouseleave="hideTooltip()"
+        ></div></td>`;
+      } else {
+        bodyHTML += `<td class="month-cell" style="${bgStyle}"></td>`;
+      }
+    });
+
+    bodyHTML += '</tr>';
+  });
+  bodyHTML += '</tbody>';
+
+  table.innerHTML = headerHTML + bodyHTML;
+}
+
+// ---- Pipeline Board ----
+function renderPipeline() {
+  const board = document.getElementById('pipelineBoard');
+  let html = '';
+
+  BD_STAGES.forEach(stage => {
+    const prospects = PIPELINE.filter(p => p.stage === stage.id);
+    html += `<div class="pipeline-column">
+      <div class="pipeline-column-header">${stage.label}</div>`;
+
+    if (prospects.length === 0) {
+      html += '<div class="pipeline-empty">No prospects</div>';
+    } else {
+      prospects.forEach(p => {
+        html += `<div class="pipeline-card">
+          <div class="org-name">${p.name}</div>
+          <div class="deal-value">$${p.dealValue.toLocaleString()} total</div>
+          <div class="deal-detail">${p.monthlyValue ? '$' + p.monthlyValue.toLocaleString() + '/mo' : ''} ${p.duration ? '&middot; ' + p.duration : ''}</div>
+          ${p.notes ? `<div class="deal-detail">${p.notes}</div>` : ''}
+          <div class="probability">${p.probability}% probability</div>
+        </div>`;
+      });
+    }
+
+    html += '</div>';
+  });
+
+  board.innerHTML = html;
+}
+
+// ---- Revenue Forecast ----
+function renderForecast() {
+  const container = document.getElementById('chartBars');
+  const months = getForecastMonths();
+
+  // Calculate revenue per month
+  const monthData = months.map(m => {
+    let confirmed = 0;
+    let pipeline = 0;
+
+    CLIENTS.forEach(c => {
+      if (m >= c.startDate && m <= c.endDate) {
+        confirmed += c.monthlyValue;
+      }
+    });
+
+    // Only count pipeline revenue from proposals with defined terms
+    PIPELINE.forEach(p => {
+      if (p.proposalSent && p.proposalStartDate && p.proposalEndDate && p.stage !== 'closed-lost') {
+        if (m >= p.proposalStartDate && m <= p.proposalEndDate) {
+          pipeline += p.monthlyValue;
+        }
+      }
+    });
+
+    return { month: m, confirmed, pipeline, total: confirmed + pipeline };
+  });
+
+  const maxValue = Math.max(...monthData.map(d => d.total), 1);
+  const chartHeight = 280;
+
+  // Gridlines
+  const gridlineValues = [0, 20000, 40000, 60000, 80000];
+  let gridHTML = '<div class="chart-gridlines">';
+  gridlineValues.forEach(v => {
+    if (v <= maxValue * 1.1) {
+      const bottom = (v / (maxValue * 1.1)) * chartHeight;
+      gridHTML += `<div class="chart-gridline" style="bottom:${bottom}px">
+        <span class="chart-gridline-label">$${(v/1000).toFixed(0)}k</span>
+      </div>`;
+    }
+  });
+  gridHTML += '</div>';
+
+  let barsHTML = '';
+  monthData.forEach(d => {
+    const confirmedHeight = (d.confirmed / (maxValue * 1.1)) * chartHeight;
+    const pipelineHeight = (d.pipeline / (maxValue * 1.1)) * chartHeight;
+
+    barsHTML += `<div class="chart-bar-group">
+      <div class="chart-value-label">$${(d.total / 1000).toFixed(0)}k</div>
+      <div class="chart-bar-stack"
+        onmouseenter="showTooltip(event, '${monthLabel(d.month)}\\nConfirmed: $${d.confirmed.toLocaleString()}\\nPipeline: $${d.pipeline.toLocaleString()}\\nTotal: $${d.total.toLocaleString()}')"
+        onmouseleave="hideTooltip()">
+        ${d.pipeline > 0 ? `<div class="chart-bar-segment pipeline" style="height:${pipelineHeight}px"></div>` : ''}
+        <div class="chart-bar-segment confirmed" style="height:${confirmedHeight}px"></div>
+      </div>
+      <div class="chart-month-label">${monthLabel(d.month)}</div>
+    </div>`;
+  });
+
+  container.innerHTML = gridHTML + barsHTML;
+  container.style.paddingLeft = '50px';
+}
+
+// ---- Tooltip ----
+function showTooltip(event, text) {
+  const tooltip = document.getElementById('tooltip');
+  tooltip.innerHTML = text.replace(/\\n/g, '<br>');
+  tooltip.classList.add('visible');
+  const x = Math.min(event.clientX + 12, window.innerWidth - 300);
+  const y = event.clientY - 10;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+function hideTooltip() {
+  document.getElementById('tooltip').classList.remove('visible');
+}
+
+// ---- Init ----
+document.getElementById('lastUpdated').textContent = LAST_UPDATED;
+renderSummary();
+renderGantt();
+renderPipeline();
+renderForecast();
+</script>
+
+</body>
+</html>
