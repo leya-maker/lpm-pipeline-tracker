@@ -289,11 +289,13 @@
     padding: 28px;
     box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
     overflow-x: auto;
+    position: relative;
   }
   .gantt-table {
     width: 100%;
     min-width: 900px;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
   }
   .gantt-table th {
     font-size: 11px;
@@ -306,6 +308,16 @@
     border-bottom: 1px solid var(--periwinkle);
     white-space: nowrap;
   }
+  .gantt-table th.frozen,
+  .gantt-table td.frozen {
+    position: sticky;
+    background: #fff;
+    z-index: 2;
+  }
+  .gantt-table th.frozen { z-index: 3; }
+  .gantt-table .frozen-client { left: 0; min-width: 140px; }
+  .gantt-table .frozen-monthly { left: 140px; min-width: 90px; }
+  .gantt-table .frozen-renewal { left: 230px; min-width: 130px; box-shadow: 4px 0 8px rgba(56, 75, 207, 0.06); }
   .gantt-table th.month-col {
     text-align: center;
     min-width: 70px;
@@ -494,7 +506,8 @@
     position: relative;
   }
   .chart-bar-segment.confirmed { background: var(--blueberry); }
-  .chart-bar-segment.pipeline { background: var(--cornflower); opacity: 0.5; }
+  .chart-bar-segment.pipeline { background: var(--cornflower); opacity: 0.7; }
+  .chart-bar-segment.potential { background: var(--mint); border: 1.5px dashed var(--cornflower); border-bottom: none; }
   .chart-month-label {
     font-size: 11px;
     color: #888;
@@ -552,7 +565,8 @@
     border-radius: 4px;
   }
   .chart-legend-swatch.confirmed { background: var(--blueberry); }
-  .chart-legend-swatch.pipeline { background: var(--cornflower); opacity: 0.5; }
+  .chart-legend-swatch.pipeline { background: var(--cornflower); opacity: 0.7; }
+  .chart-legend-swatch.potential { background: var(--mint); border: 1.5px dashed var(--cornflower); }
 
   /* --- Tooltip --- */
   .tooltip {
@@ -708,6 +722,7 @@
     <div class="chart-legend">
       <div class="chart-legend-item"><div class="chart-legend-swatch confirmed"></div> Confirmed Revenue</div>
       <div class="chart-legend-item"><div class="chart-legend-swatch pipeline"></div> Pipeline (Proposal Sent)</div>
+      <div class="chart-legend-item"><div class="chart-legend-swatch potential"></div> BD Potential (In Conversation)</div>
     </div>
   </div>
   <p class="edit-hint">Revenue forecast includes only confirmed contracts and proposals with defined terms.</p>
@@ -809,15 +824,15 @@ const PIPELINE = [
   {
     name: 'NABU',
     fullName: 'NABU',
-    stage: 'proposal-sent',
-    dealValue: 84300,
-    monthlyValue: 12200,
-    duration: '7 months',
-    probability: 60,
+    stage: 'verbal-commitment',
+    dealValue: 436480, // $54,560/mo x 8 months
+    monthlyValue: 54560,
+    duration: '8 months',
+    probability: 85,
     contact: '',
-    notes: 'SOW sent Feb 20, 2026. $12,200/month for 7 months.',
-    proposalStartDate: '2026-04',  // estimated start if closed
-    proposalEndDate: '2026-10',
+    notes: '$54,560/month for 8 months starting April 2026. Verbal commitment.',
+    proposalStartDate: '2026-04',
+    proposalEndDate: '2026-11',
     proposalSent: true
   },
   {
@@ -828,10 +843,10 @@ const PIPELINE = [
     monthlyValue: 30000, // midpoint of $20K-$40K range
     duration: '12-36 months',
     probability: 20,
-    contact: 'Via Kaysee Gilmore',
-    notes: 'Awaiting contract details from Kaysee. Range: $20K-$40K/mo, 12-36 months. Could start April 2026.',
-    proposalStartDate: null,  // no proposal sent yet — not included in forecast
-    proposalEndDate: null,
+    contact: 'Caitie Gilmore',
+    notes: 'Awaiting contract details from Caitie. Range: $20K-$40K/mo, 12-36 months. Could start April 2026.',
+    proposalStartDate: '2026-04',  // estimated start — shows as BD potential (mint), not hard forecast
+    proposalEndDate: '2028-03',    // 24-month midpoint estimate
     proposalSent: false
   },
   // Add more prospects here as they enter the pipeline:
@@ -1102,9 +1117,9 @@ function renderGantt() {
 
   // Header
   let headerHTML = '<thead><tr>';
-  headerHTML += '<th style="min-width:140px">Client</th>';
-  headerHTML += '<th style="min-width:90px">Monthly</th>';
-  headerHTML += '<th style="min-width:120px">Renewal</th>';
+  headerHTML += '<th class="frozen frozen-client">Client</th>';
+  headerHTML += '<th class="frozen frozen-monthly">Monthly</th>';
+  headerHTML += '<th class="frozen frozen-renewal">Renewal</th>';
   months.forEach(m => {
     const isCurrent = m === currentMonth;
     headerHTML += `<th class="month-col" style="${isCurrent ? 'background:rgba(223,255,0,0.15);' : ''}">${monthLabel(m)}</th>`;
@@ -1115,9 +1130,9 @@ function renderGantt() {
   let bodyHTML = '<tbody>';
   CLIENTS.forEach(client => {
     bodyHTML += '<tr>';
-    bodyHTML += `<td class="client-name">${client.name}</td>`;
-    bodyHTML += `<td class="client-revenue">$${client.monthlyValue.toLocaleString()}</td>`;
-    bodyHTML += `<td><span class="renewal-badge ${client.renewalStatus}">${client.renewalLabel}</span></td>`;
+    bodyHTML += `<td class="frozen frozen-client client-name">${client.name}</td>`;
+    bodyHTML += `<td class="frozen frozen-monthly client-revenue">$${client.monthlyValue.toLocaleString()}</td>`;
+    bodyHTML += `<td class="frozen frozen-renewal"><span class="renewal-badge ${client.renewalStatus}">${client.renewalLabel}</span></td>`;
 
     months.forEach(m => {
       const isCurrent = m === currentMonth;
@@ -1184,6 +1199,7 @@ function renderForecast() {
   const monthData = months.map(m => {
     let confirmed = 0;
     let pipeline = 0;
+    let potential = 0;
 
     CLIENTS.forEach(c => {
       if (m >= c.startDate && m <= c.endDate) {
@@ -1191,44 +1207,65 @@ function renderForecast() {
       }
     });
 
-    // Only count pipeline revenue from proposals with defined terms
     PIPELINE.forEach(p => {
-      if (p.proposalSent && p.proposalStartDate && p.proposalEndDate && p.stage !== 'closed-lost') {
+      if (p.stage === 'closed-lost') return;
+      // Proposals with defined terms → pipeline (solid cornflower)
+      if (p.proposalSent && p.proposalStartDate && p.proposalEndDate) {
         if (m >= p.proposalStartDate && m <= p.proposalEndDate) {
           pipeline += p.monthlyValue;
         }
       }
+      // BD prospects without sent proposals → potential (mint, dashed)
+      // Show them starting from their estimated start or current month, for estimated duration
+      else if (!p.proposalSent && p.monthlyValue > 0) {
+        const estStart = p.proposalStartDate || m; // if no start date, show from current month onward
+        // Estimate 12 months if no end date
+        const estEndDate = p.proposalEndDate || (() => {
+          const [sy, sm] = (p.proposalStartDate || monthKey(TODAY)).split('-').map(Number);
+          let ey = sy, em = sm + 11;
+          if (em > 12) { ey += Math.floor(em / 12); em = em % 12 || 12; }
+          return ey + '-' + String(em).padStart(2, '0');
+        })();
+        if (p.proposalStartDate && m >= p.proposalStartDate && m <= estEndDate) {
+          potential += p.monthlyValue;
+        } else if (!p.proposalStartDate && m >= monthKey(TODAY)) {
+          potential += p.monthlyValue;
+        }
+      }
     });
 
-    return { month: m, confirmed, pipeline, total: confirmed + pipeline };
+    return { month: m, confirmed, pipeline, potential, total: confirmed + pipeline + potential };
   });
 
   const maxValue = Math.max(...monthData.map(d => d.total), 1);
   const chartHeight = 280;
 
-  // Gridlines
-  const gridlineValues = [0, 20000, 40000, 60000, 80000];
+  // Gridlines — auto-scale
+  const gridStep = maxValue > 80000 ? 20000 : 10000;
+  const gridlineValues = [];
+  for (let v = 0; v <= maxValue * 1.05; v += gridStep) { gridlineValues.push(v); }
   let gridHTML = '<div class="chart-gridlines">';
   gridlineValues.forEach(v => {
-    if (v <= maxValue * 1.1) {
-      const bottom = (v / (maxValue * 1.1)) * chartHeight;
-      gridHTML += `<div class="chart-gridline" style="bottom:${bottom}px">
-        <span class="chart-gridline-label">$${(v/1000).toFixed(0)}k</span>
-      </div>`;
-    }
+    const bottom = (v / (maxValue * 1.15)) * chartHeight;
+    gridHTML += `<div class="chart-gridline" style="bottom:${bottom}px">
+      <span class="chart-gridline-label">$${(v/1000).toFixed(0)}k</span>
+    </div>`;
   });
   gridHTML += '</div>';
 
   let barsHTML = '';
   monthData.forEach(d => {
-    const confirmedHeight = (d.confirmed / (maxValue * 1.1)) * chartHeight;
-    const pipelineHeight = (d.pipeline / (maxValue * 1.1)) * chartHeight;
+    const scale = maxValue * 1.15;
+    const confirmedHeight = (d.confirmed / scale) * chartHeight;
+    const pipelineHeight = (d.pipeline / scale) * chartHeight;
+    const potentialHeight = (d.potential / scale) * chartHeight;
 
     barsHTML += `<div class="chart-bar-group">
       <div class="chart-value-label">$${(d.total / 1000).toFixed(0)}k</div>
       <div class="chart-bar-stack"
-        onmouseenter="showTooltip(event, '${monthLabel(d.month)}\\nConfirmed: $${d.confirmed.toLocaleString()}\\nPipeline: $${d.pipeline.toLocaleString()}\\nTotal: $${d.total.toLocaleString()}')"
+        onmouseenter="showTooltip(event, '${monthLabel(d.month)}\\nConfirmed: $${d.confirmed.toLocaleString()}\\nPipeline: $${d.pipeline.toLocaleString()}\\nBD Potential: $${d.potential.toLocaleString()}\\nTotal: $${d.total.toLocaleString()}')"
         onmouseleave="hideTooltip()">
+        ${d.potential > 0 ? `<div class="chart-bar-segment potential" style="height:${potentialHeight}px"></div>` : ''}
         ${d.pipeline > 0 ? `<div class="chart-bar-segment pipeline" style="height:${pipelineHeight}px"></div>` : ''}
         <div class="chart-bar-segment confirmed" style="height:${confirmedHeight}px"></div>
       </div>
