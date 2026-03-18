@@ -55,23 +55,20 @@
       "renewalLabel": "No Conversation",
       "contact": "Wendy",
       "notes": "Case for support development. $10K total, both invoiced Jan 2026."
+    },
+    {
+      "name": "NABU",
+      "fullName": "Nabu Global Inc.",
+      "monthlyValue": 5456,
+      "startDate": "2026-03",
+      "endDate": "2026-11",
+      "renewalStatus": "no-conversation",
+      "renewalLabel": "New Client",
+      "contact": "Camille Park",
+      "notes": "$5,456/month × 8 months. Major gifts assessment, outreach toolkit, strategic advisory."
     }
   ],
   "pipeline": [
-    {
-      "name": "NABU",
-      "fullName": "NABU",
-      "stage": "verbal-commitment",
-      "dealValue": 43648,
-      "monthlyValue": 5456,
-      "duration": "8 months",
-      "probability": 85,
-      "contact": "",
-      "notes": "$5,456/month for 8 months starting April 2026. Verbal commitment.",
-      "proposalStartDate": "2026-04",
-      "proposalEndDate": "2026-11",
-      "proposalSent": true
-    },
     {
       "name": "NYU",
       "fullName": "New York University",
@@ -110,6 +107,13 @@
     { "id": "closed-lost", "label": "Closed Lost" }
   ],
   "changeLog": [
+    {
+      "date": "2026-03-17",
+      "changes": [
+        "NABU signed — moved from pipeline to active clients ($5,456/mo × 8 months, ends Nov 30 2026)",
+        "NABU contact: Camille Park (camille@nabu.org)"
+      ]
+    },
     {
       "date": "2026-03-17",
       "changes": [
