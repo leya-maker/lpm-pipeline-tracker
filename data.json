@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-17",
+  "lastUpdated": "2026-03-23",
   "clients": [
     {
       "name": "ALDF",
@@ -7,10 +7,10 @@
       "monthlyValue": 42367,
       "startDate": "2025-11",
       "endDate": "2026-05",
-      "renewalStatus": "proposal-sent",
-      "renewalLabel": "Proposal Sent",
+      "renewalStatus": "verbal-commitment",
+      "renewalLabel": "Verbal Commitment",
       "contact": "Susan Halteman",
-      "notes": "6 payments of $42,367. Strategic advisory + dev ops. Renewal proposal in progress."
+      "notes": "6 payments of $42,367. Strategic advisory + dev ops. Phase 2 verbal commitment received — see pipeline."
     },
     {
       "name": "Obama Foundation",
@@ -86,15 +86,29 @@
     {
       "name": "Cave Canem",
       "fullName": "Cave Canem",
-      "stage": "discovery",
-      "dealValue": 5000,
+      "stage": "closed-won",
+      "dealValue": 4000,
       "monthlyValue": 0,
       "duration": "Project-based",
-      "probability": 30,
+      "probability": 100,
       "contact": "Hallie Hobson",
-      "notes": "Training delivered in July 2026 with pre-work and potential follow-up. ~$5K project.",
+      "notes": "Retreat training session (July 9, remote). Relationship-based fundraising for small orgs. Via HSH Consulting LLC. Contract out for signature.",
+      "proposalStartDate": "2026-07",
+      "proposalEndDate": "2026-07",
+      "proposalSent": true
+    },
+    {
+      "name": "ALDF Phase 2",
+      "fullName": "Animal Legal Defense Fund — Phase 2",
+      "stage": "verbal-commitment",
+      "dealValue": 270000,
+      "monthlyValue": 0,
+      "duration": "Jun 2026 - Dec 2026 (potential Jan-Jun 2027 extension)",
+      "probability": 80,
+      "contact": "Susan Halteman",
+      "notes": "Phase 1 ends May 31. Susan requested continuation in writing. Three service lines: Gift Processing ($112K, Jun-Sep), Prospect Research ($58K, Jul-Dec), Strategic Advisory ($70K, Jun-Dec + potential $30K extension Jan-Jun 2027). Confirmed scope: $240K. With advisory extension: $270K.",
       "proposalStartDate": "2026-06",
-      "proposalEndDate": "2026-08",
+      "proposalEndDate": "2027-06",
       "proposalSent": false
     }
   ],
@@ -107,6 +121,13 @@
     { "id": "closed-lost", "label": "Closed Lost" }
   ],
   "changeLog": [
+    {
+      "date": "2026-03-23",
+      "changes": [
+        "Cave Canem moved to Closed Won ($4,000 — retreat training session, July 9 via HSH Consulting)",
+        "ALDF Phase 2 added to pipeline at Verbal Commitment ($270K, Jun 2026 - Jun 2027, three service lines)"
+      ]
+    },
     {
       "date": "2026-03-17",
       "changes": [
