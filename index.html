@@ -355,6 +355,10 @@
     background: var(--cornflower);
     opacity: 0.6;
   }
+  .gantt-bar.continuing {
+    background: var(--lime);
+    color: var(--ink);
+  }
   .gantt-bar.potential {
     background: var(--cornflower);
     opacity: 0.5;
@@ -1047,7 +1051,7 @@ function renderGantt() {
       if (isActive) {
         let barClass = 'active';
         if (client.renewalStatus === 'winding-down') barClass = 'winding-down';
-        if (isEndMonth) barClass = 'ending';
+        if (isEndMonth) barClass = client.renewalStatus === 'verbal-commitment' ? 'continuing' : 'ending';
         bodyHTML += `<td class="month-cell" style="${bgStyle}"><div class="gantt-bar ${barClass}"
           onmouseenter="showTooltip(event, '${client.fullName}\\n${monthLabel(m)}: $${client.monthlyValue.toLocaleString()}\\n${client.notes}')"
           onmouseleave="hideTooltip()"
