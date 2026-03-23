@@ -167,7 +167,7 @@
     transition: opacity 0.2s;
   }
   .summary-card.expanded .expand-hint { display: none; }
-  .summary-card.alert .value { color: #ad6800; }
+  .summary-card.alert .value { color: #d4380d; }
   .summary-card.good .value { color: #389e0d; }
 
   /* --- Detail Drawer (below summary cards) --- */
@@ -247,7 +247,7 @@
     text-transform: uppercase;
     margin-left: 10px;
   }
-  .detail-badge.ending { background: rgba(250, 173, 20, 0.12); color: #ad6800; }
+  .detail-badge.ending { background: rgba(212, 56, 13, 0.1); color: #d4380d; }
   .detail-badge.pipeline-stage { background: rgba(56, 75, 207, 0.08); color: var(--blueberry); }
   .detail-list .detail-right {
     display: flex;
@@ -380,7 +380,7 @@
     text-transform: uppercase;
     white-space: nowrap;
   }
-  .renewal-badge.no-conversation { background: rgba(250, 173, 20, 0.12); color: #ad6800; }
+  .renewal-badge.no-conversation { background: rgba(212, 56, 13, 0.1); color: #d4380d; }
   .renewal-badge.early-conversation { background: rgba(250, 173, 20, 0.15); color: #ad6800; }
   .renewal-badge.proposal-sent { background: rgba(56, 75, 207, 0.1); color: var(--blueberry); }
   .renewal-badge.verbal-yes { background: rgba(56, 158, 13, 0.1); color: #389e0d; }
@@ -894,7 +894,7 @@ function toggleSummaryDetail(panelId) {
     });
     html += `<li style="font-weight:700; border-top:2px solid var(--periwinkle); padding-top:14px;">
       <span class="detail-org">Monthly Revenue at Risk</span>
-      <span class="detail-amount" style="color:#ad6800;">$${atRisk.toLocaleString()}/mo</span>
+      <span class="detail-amount" style="color:#d4380d;">$${atRisk.toLocaleString()}/mo</span>
     </li>`;
     html += '</ul>';
   }
@@ -1026,7 +1026,7 @@ function renderGantt() {
   headerHTML += '<th class="frozen frozen-renewal">Renewal</th>';
   months.forEach(m => {
     const isCurrent = m === currentMonth;
-    headerHTML += `<th class="month-col" style="${isCurrent ? 'background:rgba(197,203,255,0.3);' : ''}">${monthLabel(m)}</th>`;
+    headerHTML += `<th class="month-col" style="${isCurrent ? 'background:rgba(223,255,0,0.25);' : ''}">${monthLabel(m)}</th>`;
   });
   headerHTML += '</tr></thead>';
 
@@ -1042,7 +1042,7 @@ function renderGantt() {
       const isCurrent = m === currentMonth;
       const isActive = m >= client.startDate && m <= client.endDate;
       const isEndMonth = m === client.endDate;
-      const bgStyle = isCurrent ? 'background:rgba(197,203,255,0.2);' : '';
+      const bgStyle = isCurrent ? 'background:rgba(223,255,0,0.18);' : '';
 
       if (isActive) {
         let barClass = 'active';
