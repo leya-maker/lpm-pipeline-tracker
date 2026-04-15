@@ -13,17 +13,6 @@
       "notes": "6 payments of $42,367. Strategic advisory + dev ops. Phase 2 verbal commitment received — see pipeline."
     },
     {
-      "name": "Obama Foundation",
-      "fullName": "The Obama Foundation",
-      "monthlyValue": 20000,
-      "startDate": "2025-06",
-      "endDate": "2026-03",
-      "renewalStatus": "winding-down",
-      "renewalLabel": "Winding Down",
-      "contact": "Elizabeth Lach",
-      "notes": "Contract ends March 30. CDO transition support."
-    },
-    {
       "name": "CreativeMornings",
       "fullName": "CreativeMornings",
       "monthlyValue": 10650,
@@ -33,17 +22,6 @@
       "renewalLabel": "No Conversation",
       "contact": "Tina Roth Eisenberg",
       "notes": "Fundraising strategy advisor. Weekly calls with Tina."
-    },
-    {
-      "name": "HFNY",
-      "fullName": "Hope for New York",
-      "monthlyValue": 7200,
-      "startDate": "2025-09",
-      "endDate": "2026-03",
-      "renewalStatus": "winding-down",
-      "renewalLabel": "Winding Down",
-      "contact": "Judy & Freeman",
-      "notes": "Cohort training wrapping up. Final session late March."
     },
     {
       "name": "Apex for Youth",
@@ -73,12 +51,12 @@
       "name": "NYU Langone",
       "fullName": "NYU Langone Health",
       "stage": "proposal-sent",
-      "dealValue": 35000,
-      "monthlyValue": 2917,
+      "dealValue": 420000,
+      "monthlyValue": 35000,
       "duration": "12 months",
       "probability": 50,
       "contact": "Caitie Gilmore",
-      "notes": "Phase 1 proposal submitted Apr 14, 2026. 12-month engagement, $35K total. Extension/renewal potential: original scope discussed was $720K over 3 years ($20K-$40K/mo range).",
+      "notes": "Phase 1 proposal submitted Apr 14, 2026. 12-month engagement, $35K/month × 12 = $420K total. Extension/renewal potential: original scope discussed was $720K over 3 years ($20K-$40K/mo range).",
       "proposalStartDate": "2026-04",
       "proposalEndDate": "2027-03",
       "proposalSent": true
@@ -140,7 +118,10 @@
       "changes": [
         "ALDF Interim Head of Major Gifts proposal sent to Susan Halteman — added to pipeline at Proposal Sent ($107,500 total: $13,500 buildout + $16,000 KPI/Moves Mgmt tool + $13,000/mo × 6 months interim runway)",
         "Additive to existing ALDF Phase 1 (active) and Phase 2 (verbal commitment) — three parallel ALDF workstreams now in play",
-        "Lauren Phipps (CFRE) tapped to deliver day-to-day interim HoMG coaching"
+        "Lauren Phipps (CFRE) tapped to deliver day-to-day interim HoMG coaching",
+        "Obama Foundation removed from active clients (contract complete)",
+        "Hope for New York removed from active clients (contract complete)",
+        "NYU Langone deal value corrected: $35,000/month × 12 months = $420,000 total (was incorrectly logged as $35K total)"
       ]
     },
     {
