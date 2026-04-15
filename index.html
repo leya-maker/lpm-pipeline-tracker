@@ -113,9 +113,9 @@
   /* --- Revenue Summary Cards --- */
   .summary-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto 50px;
     padding: 0 24px;
   }
@@ -654,6 +654,9 @@
   }
 
   /* --- Responsive --- */
+  @media (max-width: 1200px) {
+    .summary-row { grid-template-columns: repeat(3, 1fr); }
+  }
   @media (max-width: 1024px) {
     .pipeline-board { grid-template-columns: repeat(3, 1fr); }
     .summary-row { grid-template-columns: repeat(2, 1fr); }
@@ -672,6 +675,11 @@
 </style>
 </head>
 <body>
+
+<nav style="display:flex;justify-content:center;gap:24px;padding:16px 24px;background:#fff;border-bottom:2px solid var(--periwinkle)">
+  <a href="index.html" style="font-family:var(--font-body);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;text-decoration:none;padding:6px 20px;border-radius:var(--radius-pill);background:var(--blueberry);color:#fff">Pipeline</a>
+  <a href="pnl.html" style="font-family:var(--font-body);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;text-decoration:none;color:#888;padding:6px 20px;border-radius:var(--radius-pill)">P&L Dashboard</a>
+</nav>
 
 <!-- Tooltip -->
 <div class="tooltip" id="tooltip"></div>
@@ -760,7 +768,7 @@
 // The pipeline-tracker agent reads and writes data.json directly.
 // ============================================================
 
-let TODAY, LAST_UPDATED, CLIENTS, PIPELINE, BD_STAGES;
+let TODAY, LAST_UPDATED, CLIENTS, PIPELINE, BD_STAGES, YTD_REVENUE;
 
 async function loadData() {
   try {
@@ -771,6 +779,7 @@ async function loadData() {
     CLIENTS = data.clients;
     PIPELINE = data.pipeline;
     BD_STAGES = data.bdStages;
+    YTD_REVENUE = data.ytdRevenue || null;
 
     document.getElementById('lastUpdated').textContent = LAST_UPDATED;
     renderSummary();
@@ -967,6 +976,18 @@ function renderSummary() {
   const container = document.getElementById('summaryRow');
   const currentMonth = monthKey(TODAY);
 
+  // YTD revenue (cash basis, synced from Xero by sync_ytd_revenue.py)
+  const ytd = (typeof YTD_REVENUE === 'object' && YTD_REVENUE) ? YTD_REVENUE : null;
+  let ytdAmount = ytd && typeof ytd.amount === 'number' ? ytd.amount : null;
+  let ytdAsOfLabel = '';
+  if (ytd && ytd.asOf) {
+    const d = new Date(ytd.asOf);
+    if (!isNaN(d)) {
+      ytdAsOfLabel = 'As of ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+  }
+  const ytdYear = ytd && ytd.year ? ytd.year : TODAY.getFullYear();
+
   // Current monthly revenue
   let currentRevenue = 0;
   const activeClients = CLIENTS.filter(c => c.startDate <= currentMonth && c.endDate >= currentMonth);
@@ -989,7 +1010,17 @@ function renderSummary() {
   let weightedPipeline = 0;
   activeOpps.forEach(p => weightedPipeline += p.dealValue * (p.probability / 100));
 
+  const ytdCardHTML = `
+    <div class="summary-card">
+      <div class="label">Revenue YTD ${ytdYear}</div>
+      <div class="value">${ytdAmount !== null ? '$' + Math.round(ytdAmount).toLocaleString() : '—'}</div>
+      <div class="sub">${ytdAmount !== null ? 'Cash basis · LPM Consulting' : 'Awaiting first Xero sync'}</div>
+      <div class="expand-hint">${ytdAsOfLabel || 'Synced weekly from Xero'}</div>
+    </div>
+  `;
+
   container.innerHTML = `
+    ${ytdCardHTML}
     <div class="summary-card" data-panel="revenue" onclick="toggleSummaryDetail('revenue')">
       <div class="label">Current Monthly Revenue</div>
       <div class="value">$${currentRevenue.toLocaleString()}</div>
