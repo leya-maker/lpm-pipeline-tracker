@@ -10,7 +10,7 @@
       "renewalStatus": "verbal-commitment",
       "renewalLabel": "Verbal Commitment",
       "contact": "Susan Halteman",
-      "notes": "6 payments of $42,367. Strategic advisory + dev ops. Phase 2 verbal commitment received — see pipeline."
+      "notes": "6 payments of $42,367. Strategic advisory + dev ops. Phase 2 verbal commitment received \u2014 see pipeline."
     },
     {
       "name": "CreativeMornings",
@@ -43,7 +43,7 @@
       "renewalStatus": "no-conversation",
       "renewalLabel": "New Client",
       "contact": "Camille Park",
-      "notes": "$5,456/month × 8 months. Major gifts assessment, outreach toolkit, strategic advisory."
+      "notes": "$5,456/month \u00d7 8 months. Major gifts assessment, outreach toolkit, strategic advisory."
     }
   ],
   "pipeline": [
@@ -56,7 +56,7 @@
       "duration": "12 months",
       "probability": 50,
       "contact": "Caitie Gilmore",
-      "notes": "Phase 1 proposal submitted Apr 14, 2026. 12-month engagement, $35K/month × 12 = $420K total. Extension/renewal potential: original scope discussed was $720K over 3 years ($20K-$40K/mo range).",
+      "notes": "Phase 1 proposal submitted Apr 14, 2026. 12-month engagement, $35K/month \u00d7 12 = $420K total. Extension/renewal potential: original scope discussed was $720K over 3 years ($20K-$40K/mo range).",
       "proposalStartDate": "2026-04",
       "proposalEndDate": "2027-03",
       "proposalSent": true
@@ -77,7 +77,7 @@
     },
     {
       "name": "ALDF Phase 2",
-      "fullName": "Animal Legal Defense Fund — Phase 2",
+      "fullName": "Animal Legal Defense Fund \u2014 Phase 2",
       "stage": "verbal-commitment",
       "dealValue": 270000,
       "monthlyValue": 20769,
@@ -91,57 +91,75 @@
     },
     {
       "name": "ALDF Interim HoMG",
-      "fullName": "Animal Legal Defense Fund — Interim Head of Major Gifts",
+      "fullName": "Animal Legal Defense Fund \u2014 Interim Head of Major Gifts",
       "stage": "proposal-sent",
       "dealValue": 107500,
       "monthlyValue": 13000,
       "duration": "6-month runway (month-to-month ongoing)",
       "probability": 55,
       "contact": "Susan Halteman",
-      "notes": "Proposal sent April 15, 2026. Additive to existing ALDF engagements — does not replace Phase 1 or Phase 2. Three workstreams: (1) Buildout Phase — pipeline assessment + portfolio restructuring, $13,500 one-time, 2 months. (2) KPI Dashboard & Moves Management Tool, $16,000 one-time, 2 months. (3) Interim Head of Major Gifts, $13,000/month month-to-month ongoing while ALDF searches for permanent HoMG. Lauren Phipps (CFRE, Obama Foundation) delivering day-to-day; Leya provides strategic oversight.",
+      "notes": "Proposal sent April 15, 2026. Additive to existing ALDF engagements \u2014 does not replace Phase 1 or Phase 2. Three workstreams: (1) Buildout Phase \u2014 pipeline assessment + portfolio restructuring, $13,500 one-time, 2 months. (2) KPI Dashboard & Moves Management Tool, $16,000 one-time, 2 months. (3) Interim Head of Major Gifts, $13,000/month month-to-month ongoing while ALDF searches for permanent HoMG. Lauren Phipps (CFRE, Obama Foundation) delivering day-to-day; Leya provides strategic oversight.",
       "proposalStartDate": "2026-05",
       "proposalEndDate": "2026-10",
       "proposalSent": true
     }
   ],
   "bdStages": [
-    { "id": "discovery", "label": "Discovery" },
-    { "id": "proposal-sent", "label": "Proposal Sent" },
-    { "id": "negotiation", "label": "Negotiation" },
-    { "id": "verbal-commitment", "label": "Verbal Commit" },
-    { "id": "closed-won", "label": "Closed Won" },
-    { "id": "closed-lost", "label": "Closed Lost" }
+    {
+      "id": "discovery",
+      "label": "Discovery"
+    },
+    {
+      "id": "proposal-sent",
+      "label": "Proposal Sent"
+    },
+    {
+      "id": "negotiation",
+      "label": "Negotiation"
+    },
+    {
+      "id": "verbal-commitment",
+      "label": "Verbal Commit"
+    },
+    {
+      "id": "closed-won",
+      "label": "Closed Won"
+    },
+    {
+      "id": "closed-lost",
+      "label": "Closed Lost"
+    }
   ],
   "changeLog": [
     {
       "date": "2026-04-15",
       "changes": [
-        "ALDF Interim Head of Major Gifts proposal sent to Susan Halteman — added to pipeline at Proposal Sent ($107,500 total: $13,500 buildout + $16,000 KPI/Moves Mgmt tool + $13,000/mo × 6 months interim runway)",
-        "Additive to existing ALDF Phase 1 (active) and Phase 2 (verbal commitment) — three parallel ALDF workstreams now in play",
+        "ALDF Interim Head of Major Gifts proposal sent to Susan Halteman \u2014 added to pipeline at Proposal Sent ($107,500 total: $13,500 buildout + $16,000 KPI/Moves Mgmt tool + $13,000/mo \u00d7 6 months interim runway)",
+        "Additive to existing ALDF Phase 1 (active) and Phase 2 (verbal commitment) \u2014 three parallel ALDF workstreams now in play",
         "Lauren Phipps (CFRE) tapped to deliver day-to-day interim HoMG coaching",
         "Obama Foundation removed from active clients (contract complete)",
         "Hope for New York removed from active clients (contract complete)",
-        "NYU Langone deal value corrected: $35,000/month × 12 months = $420,000 total (was incorrectly logged as $35K total)"
+        "NYU Langone deal value corrected: $35,000/month \u00d7 12 months = $420,000 total (was incorrectly logged as $35K total)"
       ]
     },
     {
       "date": "2026-04-14",
       "changes": [
-        "NYU Langone proposal submitted — moved from Discovery to Proposal Sent ($35K total, 12 months, Apr 2026 - Mar 2027)",
+        "NYU Langone proposal submitted \u2014 moved from Discovery to Proposal Sent ($35K total, 12 months, Apr 2026 - Mar 2027)",
         "NYU entry corrected: was labeled 'New York University', actually NYU Langone Health"
       ]
     },
     {
       "date": "2026-03-23",
       "changes": [
-        "Cave Canem moved to Closed Won ($4,000 — retreat training session, July 9 via HSH Consulting)",
+        "Cave Canem moved to Closed Won ($4,000 \u2014 retreat training session, July 9 via HSH Consulting)",
         "ALDF Phase 2 added to pipeline at Verbal Commitment ($270K, Jun 2026 - Jun 2027, three service lines)"
       ]
     },
     {
       "date": "2026-03-17",
       "changes": [
-        "NABU signed — moved from pipeline to active clients ($5,456/mo × 8 months, ends Nov 30 2026)",
+        "NABU signed \u2014 moved from pipeline to active clients ($5,456/mo \u00d7 8 months, ends Nov 30 2026)",
         "NABU contact: Camille Park (camille@nabu.org)"
       ]
     },
@@ -149,11 +167,21 @@
       "date": "2026-03-17",
       "changes": [
         "Initial pipeline tracker created",
-        "ALDF renewal status: early conversation → proposal sent",
+        "ALDF renewal status: early conversation \u2192 proposal sent",
         "NABU moved to verbal commitment ($5,456/mo x 8 months)",
         "NYU added to pipeline (discovery, contact: Caitie Gilmore)",
         "Cave Canem added to pipeline (discovery, contact: Hallie Hobson)"
       ]
     }
-  ]
+  ],
+  "ytdRevenue": {
+    "amount": 196900.0,
+    "year": 2026,
+    "asOf": "2026-04-15T20:46:15+00:00",
+    "fromDate": "2026-01-01",
+    "toDate": "2026-04-15",
+    "basis": "cash",
+    "source": "Xero P&L (cash basis, paymentsOnly=true)",
+    "org": "LPM Consulting"
+  }
 }
