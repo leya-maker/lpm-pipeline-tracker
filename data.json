@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-23",
+  "lastUpdated": "2026-04-14",
   "clients": [
     {
       "name": "ALDF",
@@ -70,18 +70,18 @@
   ],
   "pipeline": [
     {
-      "name": "NYU",
-      "fullName": "New York University",
-      "stage": "discovery",
-      "dealValue": 720000,
-      "monthlyValue": 30000,
-      "duration": "12-36 months",
-      "probability": 20,
+      "name": "NYU Langone",
+      "fullName": "NYU Langone Health",
+      "stage": "proposal-sent",
+      "dealValue": 35000,
+      "monthlyValue": 2917,
+      "duration": "12 months",
+      "probability": 50,
       "contact": "Caitie Gilmore",
-      "notes": "Awaiting contract details from Caitie. Range: $20K-$40K/mo, 12-36 months. Could start April 2026.",
+      "notes": "Proposal submitted Apr 14, 2026. 12-month engagement, $35K total.",
       "proposalStartDate": "2026-04",
-      "proposalEndDate": "2028-03",
-      "proposalSent": false
+      "proposalEndDate": "2027-03",
+      "proposalSent": true
     },
     {
       "name": "Cave Canem",
@@ -121,6 +121,13 @@
     { "id": "closed-lost", "label": "Closed Lost" }
   ],
   "changeLog": [
+    {
+      "date": "2026-04-14",
+      "changes": [
+        "NYU Langone proposal submitted — moved from Discovery to Proposal Sent ($35K total, 12 months, Apr 2026 - Mar 2027)",
+        "NYU entry corrected: was labeled 'New York University', actually NYU Langone Health"
+      ]
+    },
     {
       "date": "2026-03-23",
       "changes": [
