@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-14",
+  "lastUpdated": "2026-04-15",
   "clients": [
     {
       "name": "ALDF",
@@ -110,6 +110,20 @@
       "proposalStartDate": "2026-06",
       "proposalEndDate": "2027-06",
       "proposalSent": false
+    },
+    {
+      "name": "ALDF Interim HoMG",
+      "fullName": "Animal Legal Defense Fund — Interim Head of Major Gifts",
+      "stage": "proposal-sent",
+      "dealValue": 107500,
+      "monthlyValue": 13000,
+      "duration": "6-month runway (month-to-month ongoing)",
+      "probability": 55,
+      "contact": "Susan Halteman",
+      "notes": "Proposal sent April 15, 2026. Additive to existing ALDF engagements — does not replace Phase 1 or Phase 2. Three workstreams: (1) Buildout Phase — pipeline assessment + portfolio restructuring, $13,500 one-time, 2 months. (2) KPI Dashboard & Moves Management Tool, $16,000 one-time, 2 months. (3) Interim Head of Major Gifts, $13,000/month month-to-month ongoing while ALDF searches for permanent HoMG. Lauren Phipps (CFRE, Obama Foundation) delivering day-to-day; Leya provides strategic oversight.",
+      "proposalStartDate": "2026-05",
+      "proposalEndDate": "2026-10",
+      "proposalSent": true
     }
   ],
   "bdStages": [
@@ -121,6 +135,14 @@
     { "id": "closed-lost", "label": "Closed Lost" }
   ],
   "changeLog": [
+    {
+      "date": "2026-04-15",
+      "changes": [
+        "ALDF Interim Head of Major Gifts proposal sent to Susan Halteman — added to pipeline at Proposal Sent ($107,500 total: $13,500 buildout + $16,000 KPI/Moves Mgmt tool + $13,000/mo × 6 months interim runway)",
+        "Additive to existing ALDF Phase 1 (active) and Phase 2 (verbal commitment) — three parallel ALDF workstreams now in play",
+        "Lauren Phipps (CFRE) tapped to deliver day-to-day interim HoMG coaching"
+      ]
+    },
     {
       "date": "2026-04-14",
       "changes": [
