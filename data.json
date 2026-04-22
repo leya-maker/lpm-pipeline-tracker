@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-15",
+  "lastUpdated": "2026-04-22",
   "clients": [
     {
       "name": "ALDF",
@@ -44,6 +44,17 @@
       "renewalLabel": "New Client",
       "contact": "Camille Park",
       "notes": "$5,456/month × 8 months. Major gifts assessment, outreach toolkit, strategic advisory."
+    },
+    {
+      "name": "Cave Canem",
+      "fullName": "Cave Canem",
+      "monthlyValue": 4000,
+      "startDate": "2026-07",
+      "endDate": "2026-07",
+      "renewalStatus": "no-conversation",
+      "renewalLabel": "New Client",
+      "contact": "Hallie Hobson",
+      "notes": "75-min virtual fundraising training, July 9, 2026. $4,000 project-based via HSH Consulting LLC. Co-consultant: Hallie Hobson."
     }
   ],
   "pipeline": [
@@ -59,20 +70,6 @@
       "notes": "Phase 1 proposal submitted Apr 14, 2026. 12-month engagement, $35K/month × 12 = $420K total. Extension/renewal potential: original scope discussed was $720K over 3 years ($20K-$40K/mo range).",
       "proposalStartDate": "2026-04",
       "proposalEndDate": "2027-03",
-      "proposalSent": true
-    },
-    {
-      "name": "Cave Canem",
-      "fullName": "Cave Canem",
-      "stage": "closed-won",
-      "dealValue": 4000,
-      "monthlyValue": 4000,
-      "duration": "Project-based",
-      "probability": 100,
-      "contact": "Hallie Hobson",
-      "notes": "Retreat training session (July 9, remote). Relationship-based fundraising for small orgs. Via HSH Consulting LLC. Contract out for signature.",
-      "proposalStartDate": "2026-07",
-      "proposalEndDate": "2026-07",
       "proposalSent": true
     },
     {
@@ -92,11 +89,11 @@
     {
       "name": "ALDF Interim HoMG",
       "fullName": "Animal Legal Defense Fund — Interim Head of Major Gifts",
-      "stage": "proposal-sent",
+      "stage": "negotiation",
       "dealValue": 107500,
       "monthlyValue": 13000,
       "duration": "6-month runway (month-to-month ongoing)",
-      "probability": 55,
+      "probability": 70,
       "contact": "Susan Halteman",
       "notes": "Proposal sent April 15, 2026. Additive to existing ALDF engagements — does not replace Phase 1 or Phase 2. Three workstreams: (1) Buildout Phase — pipeline assessment + portfolio restructuring, $13,500 one-time, 2 months. (2) KPI Dashboard & Moves Management Tool, $16,000 one-time, 2 months. (3) Interim Head of Major Gifts, $13,000/month month-to-month ongoing while ALDF searches for permanent HoMG. Lauren Phipps (CFRE, Obama Foundation) delivering day-to-day; Leya provides strategic oversight.",
       "proposalStartDate": "2026-05",
@@ -131,6 +128,13 @@
     }
   ],
   "changeLog": [
+    {
+      "date": "2026-04-22",
+      "changes": [
+        "Cave Canem moved from pipeline (Closed Won) to active clients — $4,000 project-based engagement, July 9, 2026 training",
+        "ALDF Interim HoMG moved from Proposal Sent to Negotiation (probability raised to 70%)"
+      ]
+    },
     {
       "date": "2026-04-15",
       "changes": [
@@ -177,9 +181,9 @@
   "ytdRevenue": {
     "amount": 196900.0,
     "year": 2026,
-    "asOf": "2026-04-15T20:46:15+00:00",
+    "asOf": "2026-04-17T21:00:05+00:00",
     "fromDate": "2026-01-01",
-    "toDate": "2026-04-15",
+    "toDate": "2026-04-17",
     "basis": "cash",
     "source": "Xero P&L (cash basis, paymentsOnly=true)",
     "org": "LPM Consulting"
