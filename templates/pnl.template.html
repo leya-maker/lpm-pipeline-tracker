@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LPM P&L Dashboard</title>
+<style>
+  @font-face {
+    font-family: 'King and Queen';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/King and Queen/KingandQueen-Regular.otf') format('opentype');
+    font-weight: 400; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'King and Queen';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/King and Queen/KingandQueen-SemiBold.otf') format('opentype');
+    font-weight: 600; font-style: normal; font-display: swap;
+  }
+  @font-face {
+    font-family: 'Work Sans';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/Work Sans/WorkSans-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900; font-style: normal; font-display: swap;
+  }
+
+  :root {
+    --blueberry: #384BCF;
+    --cornflower: #717FEF;
+    --periwinkle: #C5CBFF;
+    --lime: #DFFF00;
+    --mint: #EBFFD6;
+    --gardenia: #FFFFF6;
+    --ink: #333333;
+    --green: #389e0d;
+    --red: #d4380d;
+    --font-display: 'King and Queen', Georgia, serif;
+    --font-body: 'Work Sans', system-ui, sans-serif;
+    --radius-pill: 100px;
+    --radius-card: 16px;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--gardenia);
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding: 16px 24px;
+    background: #fff;
+    border-bottom: 2px solid var(--periwinkle);
+  }
+  .nav a {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: #888;
+    padding: 6px 20px;
+    border-radius: var(--radius-pill);
+    transition: all 0.2s;
+  }
+  .nav a:hover { color: var(--blueberry); }
+  .nav a.active { background: var(--blueberry); color: #fff; }
+
+  .hero {
+    text-align: center;
+    padding: 50px 24px 20px;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 2.8rem;
+    color: var(--blueberry);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .hero .subhead {
+    font-size: 1.15rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 400;
+  }
+  .hero .last-updated {
+    font-size: 13px;
+    color: #999;
+    margin-top: 8px;
+  }
+
+  .year-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0 30px;
+  }
+  .year-btn {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 32px;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--periwinkle);
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .year-btn:hover { border-color: var(--cornflower); }
+  .year-btn.active {
+    background: var(--blueberry);
+    border-color: var(--blueberry);
+    color: #fff;
+  }
+  .year-btn .year-btn-sub {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+
+  .arch-divider {
+    width: 120px;
+    height: 60px;
+    border: 3px solid var(--periwinkle);
+    border-bottom: none;
+    border-radius: 120px 120px 0 0;
+    margin: 0 auto 40px;
+  }
+
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto 50px;
+    padding: 0 24px;
+  }
+  .summary-card {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: var(--radius-card);
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
+  }
+  .summary-card .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .summary-card .value {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--blueberry);
+    font-weight: 400;
+  }
+  .summary-card .sub {
+    font-size: 13px;
+    color: #999;
+    margin-top: 4px;
+  }
+  .summary-card.good .value { color: var(--green); }
+  .summary-card.loss .value { color: var(--red); }
+
+  .org-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .org-btn {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 28px;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--periwinkle);
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .org-btn:hover { border-color: var(--cornflower); }
+  .org-btn.active {
+    background: var(--blueberry);
+    border-color: var(--blueberry);
+    color: #fff;
+  }
+
+  .section {
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 0 24px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .section-header h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.8rem;
+    color: var(--blueberry);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .section-header .line {
+    flex: 1;
+    height: 2px;
+    background: var(--periwinkle);
+    border-radius: 1px;
+  }
+
+  .pnl-card {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: var(--radius-card);
+    padding: 32px;
+    box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
+  }
+  .pnl-table { width: 100%; border-collapse: collapse; }
+  .pnl-table th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #888;
+    font-weight: 600;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--periwinkle);
+  }
+  .pnl-table th:last-child { text-align: right; }
+  .pnl-table td {
+    padding: 12px 16px;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(197, 203, 255, 0.3);
+  }
+  .pnl-table td:last-child {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .pnl-table tr.section-row td {
+    font-weight: 700;
+    color: var(--blueberry);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding-top: 24px;
+    border-bottom: 1px solid var(--periwinkle);
+  }
+  .pnl-table tr.total-row td {
+    font-weight: 700;
+    border-top: 2px solid var(--blueberry);
+    border-bottom: none;
+    padding-top: 14px;
+    font-size: 16px;
+  }
+  .pnl-table tr.total-row td:last-child { color: var(--blueberry); }
+  .pnl-table tr.grand-total td {
+    font-weight: 700;
+    font-size: 18px;
+    border-top: 3px double var(--blueberry);
+    border-bottom: none;
+    padding-top: 16px;
+    padding-bottom: 4px;
+  }
+  .pnl-table tr.grand-total td:last-child { color: var(--blueberry); }
+  .pnl-table tr.grand-total.loss td:last-child { color: var(--red); }
+  .pnl-table tr.grand-total.good td:last-child { color: var(--green); }
+  .pnl-table .indent { padding-left: 32px; color: #555; }
+
+  .expense-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .bar-row { display: flex; align-items: center; gap: 12px; }
+  .bar-label {
+    width: 200px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .bar-track {
+    flex: 1;
+    height: 28px;
+    background: rgba(197, 203, 255, 0.2);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: var(--blueberry);
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    min-width: fit-content;
+    transition: width 0.6s ease;
+  }
+  .bar-fill.revenue { background: var(--green); }
+  .bar-fill.cost { background: var(--cornflower); }
+  .bar-fill.expense { background: var(--blueberry); }
+  .bar-amount {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    min-width: 80px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 24px;
+    color: #888;
+    font-size: 1.05rem;
+  }
+  .empty-state strong { color: var(--blueberry); display: block; margin-bottom: 8px; font-family: var(--font-display); font-size: 1.4rem; }
+
+  .forecast-card {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: var(--radius-card);
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
+  }
+  .forecast-contract {
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(197, 203, 255, 0.3);
+  }
+  .forecast-contract:last-child { border-bottom: none; }
+  .forecast-contract .top { display: flex; justify-content: space-between; align-items: baseline; }
+  .forecast-contract .name { font-weight: 600; font-size: 16px; color: var(--ink); }
+  .forecast-contract .amount { font-weight: 700; color: var(--blueberry); font-variant-numeric: tabular-nums; }
+  .forecast-contract .meta { font-size: 13px; color: #999; margin-top: 4px; }
+  .forecast-contract .sub { font-size: 13px; color: #666; margin-top: 8px; padding-left: 16px; border-left: 2px solid var(--periwinkle); }
+  .forecast-contract .sub-item { display: flex; justify-content: space-between; margin-top: 4px; }
+  .forecast-contract .sub-item .sub-amount { color: var(--red); font-variant-numeric: tabular-nums; }
+
+  .footer {
+    text-align: center;
+    padding: 40px 24px 60px;
+    font-size: 13px;
+    color: #999;
+  }
+  .footer a { color: var(--cornflower); text-decoration: none; }
+
+  @media (max-width: 768px) {
+    .summary-row { grid-template-columns: repeat(2, 1fr); }
+    .hero h1 { font-size: 2rem; }
+    .bar-label { width: 120px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html">Pipeline</a>
+  <a href="pnl.html" class="active">P&L Dashboard</a>
+</nav>
+
+<div class="hero">
+  <h1>Profit & Loss</h1>
+  <p class="subhead" id="subhead">Financial Overview</p>
+  <p class="last-updated" id="lastUpdated"></p>
+</div>
+
+<div class="year-toggle" id="yearToggle"></div>
+
+<div class="arch-divider"></div>
+
+<div id="viewContainer"></div>
+
+<div class="footer">
+  LPM Consulting &mdash; Internal Dashboard
+  <br><a href="index.html">Back to Pipeline Tracker</a>
+</div>
+
+<script>
+const EMBEDDED_DATA = {{EMBEDDED_DATA}};
+
+const fmt = n => {
+  const abs = Math.abs(n);
+  const str = abs >= 1000 ? abs.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0}) : abs.toFixed(2);
+  return (n < 0 ? '(' : '') + '$' + str + (n < 0 ? ')' : '');
+};
+
+let activeView = 'actuals';
+let activeOrg = 0;
+
+function init() {
+  document.getElementById('lastUpdated').textContent = 'Data as of ' + EMBEDDED_DATA.lastUpdated;
+  renderYearToggle();
+  renderView();
+}
+
+function renderYearToggle() {
+  const actualsYear = EMBEDDED_DATA.actuals.year;
+  const forecastYear = EMBEDDED_DATA.forecast ? EMBEDDED_DATA.forecast.year : null;
+  const btns = [
+    `<button class="year-btn ${activeView === 'actuals' ? 'active' : ''}" onclick="switchView('actuals')">${actualsYear} Actuals<span class="year-btn-sub">Xero • YTD</span></button>`
+  ];
+  if (forecastYear) {
+    btns.push(`<button class="year-btn ${activeView === 'forecast' ? 'active' : ''}" onclick="switchView('forecast')">${forecastYear} Forecast<span class="year-btn-sub">Signed Contracts</span></button>`);
+  }
+  document.getElementById('yearToggle').innerHTML = btns.join('');
+}
+
+function switchView(view) {
+  activeView = view;
+  renderYearToggle();
+  renderView();
+}
+
+function renderView() {
+  const container = document.getElementById('viewContainer');
+  if (activeView === 'actuals') {
+    container.innerHTML = renderActualsHTML();
+    setTimeout(() => {
+      renderActualsContent();
+    }, 0);
+  } else {
+    container.innerHTML = renderForecastHTML();
+  }
+}
+
+function renderActualsHTML() {
+  return `
+    <div class="summary-row" id="summaryCards"></div>
+    <div class="org-toggle" id="orgToggle"></div>
+    <div class="section" id="expenseViz">
+      <div class="section-header"><h2 id="vizTitle">Expense Breakdown</h2><div class="line"></div></div>
+      <div class="pnl-card"><div class="expense-bars" id="expenseBars"></div></div>
+    </div>
+    <div class="section" id="pnlSection">
+      <div class="section-header"><h2 id="pnlTitle">Detailed P&L</h2><div class="line"></div></div>
+      <div class="pnl-card"><table class="pnl-table" id="pnlTable"></table></div>
+    </div>
+  `;
+}
+
+function renderActualsContent() {
+  const actuals = EMBEDDED_DATA.actuals;
+  document.getElementById('subhead').textContent = `${actuals.year} Year-to-Date • ${actuals.fromDate} → ${actuals.toDate}`;
+  renderSummary(actuals);
+  renderOrgToggle(actuals);
+  renderOrg(actuals, activeOrg);
+}
+
+function renderSummary(actuals) {
+  const lpm = actuals.orgs[0];
+  const ea = actuals.orgs[1];
+  const combinedRevenue = (lpm.totals.revenue || 0) + (ea.totals.revenue || 0);
+  const combinedNet = (lpm.totals.netIncome || 0) + (ea.totals.netIncome || 0);
+  const margin = lpm.totals.revenue > 0 ? ((lpm.totals.netIncome / lpm.totals.revenue) * 100).toFixed(0) : 0;
+
+  const cards = [
+    { label: 'Combined Revenue', value: fmt(combinedRevenue), sub: `${lpm.name.split(' ')[0]} + ${ea.name.split(' ')[0]}`, cls: '' },
+    { label: `${lpm.name.split(' ')[0]} Net Income`, value: fmt(lpm.totals.netIncome), sub: margin + '% margin', cls: lpm.totals.netIncome >= 0 ? 'good' : 'loss' },
+    { label: `${ea.name.split(' ')[0]} Net`, value: fmt(ea.totals.netIncome), sub: ea.totals.netIncome >= 0 ? 'Net income' : 'Net loss', cls: ea.totals.netIncome >= 0 ? 'good' : 'loss' },
+    { label: 'Combined Net', value: fmt(combinedNet), sub: 'Both entities', cls: combinedNet >= 0 ? 'good' : 'loss' },
+  ];
+
+  document.getElementById('summaryCards').innerHTML = cards.map(c =>
+    `<div class="summary-card ${c.cls}"><div class="label">${c.label}</div><div class="value">${c.value}</div><div class="sub">${c.sub}</div></div>`
+  ).join('');
+}
+
+function renderOrgToggle(actuals) {
+  document.getElementById('orgToggle').innerHTML = actuals.orgs.map((o, i) =>
+    `<button class="org-btn${i === activeOrg ? ' active' : ''}" onclick="switchOrg(${i})">${o.name}</button>`
+  ).join('');
+}
+
+function switchOrg(i) {
+  activeOrg = i;
+  renderOrgToggle(EMBEDDED_DATA.actuals);
+  renderOrg(EMBEDDED_DATA.actuals, i);
+}
+
+function renderOrg(actuals, i) {
+  const org = actuals.orgs[i];
+  document.getElementById('vizTitle').textContent = `${org.name} — Breakdown`;
+  document.getElementById('pnlTitle').textContent = `${org.name} — Detailed P&L`;
+  renderBars(org);
+  renderTable(org);
+}
+
+function renderBars(org) {
+  const items = [];
+  org.revenue.forEach(r => { if (r.amount > 0) items.push({ name: r.name, amount: r.amount, type: 'revenue' }); });
+  org.costOfSales.forEach(r => items.push({ name: r.name, amount: Math.abs(r.amount), type: 'cost' }));
+  org.expenses.forEach(r => { if (r.amount < 0) items.push({ name: r.name, amount: Math.abs(r.amount), type: 'expense' }); });
+
+  const revenues = items.filter(i => i.type === 'revenue');
+  const costs = items.filter(i => i.type === 'cost');
+  const expenses = items.filter(i => i.type === 'expense').sort((a, b) => b.amount - a.amount);
+  const all = [...revenues, ...costs, ...expenses];
+
+  const max = Math.max(...all.map(i => i.amount), 1);
+  document.getElementById('expenseBars').innerHTML = all.map(item => {
+    const pct = Math.max((item.amount / max) * 100, 2);
+    return `<div class="bar-row"><div class="bar-label">${item.name}</div><div class="bar-track"><div class="bar-fill ${item.type}" style="width:${pct}%">${pct > 15 ? fmt(item.amount) : ''}</div></div><div class="bar-amount">${pct <= 15 ? fmt(item.amount) : ''}</div></div>`;
+  }).join('');
+}
+
+function renderTable(org) {
+  let html = '<thead><tr><th>Account</th><th>Amount</th></tr></thead><tbody>';
+  html += '<tr class="section-row"><td>Revenue</td><td></td></tr>';
+  let totalRev = 0;
+  org.revenue.forEach(r => {
+    html += `<tr><td class="indent">${r.name}</td><td>${fmt(r.amount)}</td></tr>`;
+    totalRev += r.amount;
+  });
+  html += `<tr class="total-row"><td>Total Revenue</td><td>${fmt(totalRev)}</td></tr>`;
+
+  if (org.costOfSales.length > 0) {
+    html += '<tr class="section-row"><td>Cost of Sales</td><td></td></tr>';
+    let totalCos = 0;
+    org.costOfSales.forEach(r => {
+      html += `<tr><td class="indent">${r.name}</td><td>${fmt(r.amount)}</td></tr>`;
+      totalCos += r.amount;
+    });
+    html += `<tr class="total-row"><td>Gross Profit</td><td>${fmt(totalRev - totalCos)}</td></tr>`;
+  }
+
+  if (org.expenses.length > 0) {
+    html += '<tr class="section-row"><td>Other Income &amp; Expense</td><td></td></tr>';
+    let totalExp = 0;
+    const sorted = [...org.expenses].sort((a, b) => a.amount - b.amount);
+    sorted.forEach(r => {
+      const display = r.amount < 0 ? fmt(Math.abs(r.amount)) : `<span style="color:var(--green)">${fmt(r.amount)}</span>`;
+      html += `<tr><td class="indent">${r.name}</td><td>${display}</td></tr>`;
+      totalExp += r.amount;
+    });
+    const totalDisplay = totalExp < 0 ? fmt(Math.abs(totalExp)) : `<span style="color:var(--green)">${fmt(totalExp)}</span>`;
+    html += `<tr class="total-row"><td>Net Other Income / (Expense)</td><td>${totalDisplay}</td></tr>`;
+  }
+
+  const net = org.totals.netIncome || 0;
+  const cls = net >= 0 ? 'good' : 'loss';
+  html += `<tr class="grand-total ${cls}"><td>Net Income / (Loss)</td><td>${fmt(net)}</td></tr>`;
+  html += '</tbody>';
+  document.getElementById('pnlTable').innerHTML = html;
+}
+
+function renderForecastHTML() {
+  const f = EMBEDDED_DATA.forecast;
+  document.getElementById('subhead').textContent = `${f.year} Forecast • Signed contracts only`;
+
+  if (!f.contracts || f.contracts.length === 0) {
+    return `
+      <div class="empty-state">
+        <strong>No signed contracts for ${f.year} yet</strong>
+        As contracts close in the pipeline tracker with coverage into ${f.year}, they'll appear here automatically.
+      </div>
+    `;
+  }
+
+  const cards = [
+    { label: `${f.year} Committed Revenue`, value: fmt(f.totals.revenue), sub: `${f.contracts.length} contract${f.contracts.length === 1 ? '' : 's'}`, cls: 'good' },
+    { label: 'Subcontractor Costs', value: fmt(f.totals.subcontractorCosts), sub: 'Fixed retainers', cls: 'loss' },
+    { label: 'Gross Margin', value: fmt(f.totals.grossProfit), sub: (f.totals.revenue > 0 ? Math.round((f.totals.grossProfit / f.totals.revenue) * 100) : 0) + '%', cls: f.totals.grossProfit >= 0 ? 'good' : 'loss' },
+    { label: 'Pipeline Contracts', value: String(f.contracts.length), sub: 'Closed-won', cls: '' },
+  ];
+  const summary = `<div class="summary-row">${cards.map(c =>
+    `<div class="summary-card ${c.cls}"><div class="label">${c.label}</div><div class="value">${c.value}</div><div class="sub">${c.sub}</div></div>`
+  ).join('')}</div>`;
+
+  const contracts = f.contracts.map(c => {
+    let subcontractorBlock = '';
+    if (c.subcontractors && c.subcontractors.length > 0) {
+      const items = c.subcontractors.map(s =>
+        `<div class="sub-item"><span>${s.name} &mdash; ${s.role}</span><span class="sub-amount">${fmt(-s.totalCost)}</span></div>`
+      ).join('');
+      subcontractorBlock = `<div class="sub"><strong>Subcontractor retainers</strong>${items}</div>`;
+    }
+    return `
+      <div class="forecast-contract">
+        <div class="top">
+          <div class="name">${c.name}</div>
+          <div class="amount">${fmt(c.revenue)}</div>
+        </div>
+        <div class="meta">${c.monthsInYear} month${c.monthsInYear === 1 ? '' : 's'} × ${fmt(c.monthlyValue)}/mo${c.notes ? ' • ' + c.notes : ''}</div>
+        ${subcontractorBlock}
+      </div>
+    `;
+  }).join('');
+
+  return `
+    ${summary}
+    <div class="section">
+      <div class="section-header"><h2>Committed Contracts</h2><div class="line"></div></div>
+      <div class="forecast-card">${contracts}</div>
+    </div>
+  `;
+}
+
+init();
+</script>
+</body>
+</html>
