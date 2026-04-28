@@ -61,13 +61,13 @@
     {
       "name": "NYU Langone",
       "fullName": "NYU Langone Health",
-      "stage": "proposal-sent",
-      "dealValue": 420000,
-      "monthlyValue": 35000,
+      "stage": "verbal-commitment",
+      "dealValue": 300000,
+      "monthlyValue": 25000,
       "duration": "12 months",
-      "probability": 50,
+      "probability": 80,
       "contact": "Caitie Gilmore",
-      "notes": "Phase 1 proposal submitted Apr 14, 2026. 12-month engagement, $35K/month × 12 = $420K total. Extension/renewal potential: original scope discussed was $720K over 3 years ($20K-$40K/mo range).",
+      "notes": "Verbal commitment received April 28, 2026. 12-month engagement, $25K/month × 12 = $300K total (revised down from $35K/$420K in the original proposal). Extension/renewal potential: original scope discussed was $720K over 3 years.",
       "proposalStartDate": "2026-04",
       "proposalEndDate": "2027-03",
       "proposalSent": true
@@ -151,6 +151,7 @@
       "changes": [
         "ALDF Interim HoMG moved from Negotiation to Contract Drafted — verbal commitment received, contract being drafted, May 11 start date, initial 6-month term through Nov 2026 with open-ended continuation (probability 70 → 90)",
         "Clergy Community Coalition (CCC) added to pipeline at Contract Drafted — $70,750 total ($60,250 core 3-Year Fundraising Growth Plan + $10,500 Bloomerang add-on led by Kelly Braunegg), 6 months, May 18 – November 2026",
+        "NYU Langone moved from Proposal Sent to Verbal Commitment — revised to $25K/month × 12 = $300K total (down from $35K/$420K in original proposal), probability 50 → 80",
         "New BD stage added: 'Contract Drafted' (between Verbal Commit and Closed Won)"
       ]
     },
