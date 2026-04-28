@@ -914,7 +914,7 @@ function toggleSummaryDetail(panelId) {
 
   else if (panelId === 'pipeline') {
     const activeOpps = PIPELINE.filter(p => p.stage !== 'closed-lost' && p.stage !== 'closed-won');
-    const stageLabels = { 'discovery': 'Discovery', 'proposal-sent': 'Proposal Sent', 'negotiation': 'Negotiation', 'verbal-commitment': 'Verbal Commit' };
+    const stageLabels = { 'discovery': 'Discovery', 'proposal-sent': 'Proposal Sent', 'negotiation': 'Negotiation', 'verbal-commitment': 'Verbal Commit', 'contract-drafted': 'Contract Drafted' };
     html = '<div class="detail-title">Active Pipeline Opportunities</div><ul class="detail-list">';
     activeOpps.forEach(p => {
       html += `<li>
@@ -940,7 +940,7 @@ function toggleSummaryDetail(panelId) {
 
   else if (panelId === 'weighted') {
     const activeOpps = PIPELINE.filter(p => p.stage !== 'closed-lost' && p.stage !== 'closed-won');
-    const stageLabels = { 'discovery': 'Discovery', 'proposal-sent': 'Proposal Sent', 'negotiation': 'Negotiation', 'verbal-commitment': 'Verbal Commit' };
+    const stageLabels = { 'discovery': 'Discovery', 'proposal-sent': 'Proposal Sent', 'negotiation': 'Negotiation', 'verbal-commitment': 'Verbal Commit', 'contract-drafted': 'Contract Drafted' };
     html = '<div class="detail-title">Probability-Adjusted Pipeline Value</div><ul class="detail-list">';
     activeOpps.forEach(p => {
       const weighted = Math.round(p.dealValue * (p.probability / 100));

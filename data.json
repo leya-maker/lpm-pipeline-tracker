@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-22",
+  "lastUpdated": "2026-04-28",
   "clients": [
     {
       "name": "ALDF",
@@ -89,15 +89,29 @@
     {
       "name": "ALDF Interim HoMG",
       "fullName": "Animal Legal Defense Fund — Interim Head of Major Gifts",
-      "stage": "negotiation",
+      "stage": "contract-drafted",
       "dealValue": 107500,
       "monthlyValue": 13000,
       "duration": "6-month runway (month-to-month ongoing)",
-      "probability": 70,
+      "probability": 90,
       "contact": "Susan Halteman",
-      "notes": "Proposal sent April 15, 2026. Additive to existing ALDF engagements — does not replace Phase 1 or Phase 2. Three workstreams: (1) Buildout Phase — pipeline assessment + portfolio restructuring, $13,500 one-time, 2 months. (2) KPI Dashboard & Moves Management Tool, $16,000 one-time, 2 months. (3) Interim Head of Major Gifts, $13,000/month month-to-month ongoing while ALDF searches for permanent HoMG. Lauren Phipps (CFRE, Obama Foundation) delivering day-to-day; Leya provides strategic oversight.",
+      "notes": "Verbal commitment received April 28, 2026 — contract being drafted. Start date May 11, 2026. Additive to existing ALDF engagements — does not replace Phase 1 or Phase 2. Three workstreams: (1) Buildout Phase — pipeline assessment + portfolio restructuring, $13,500 one-time, 2 months. (2) KPI Dashboard & Moves Management Tool, $16,000 one-time, 2 months. (3) Interim Head of Major Gifts, $13,000/month month-to-month ongoing while ALDF searches for permanent HoMG. Lauren Phipps (CFRE, Obama Foundation) delivering day-to-day; Leya provides strategic oversight.",
       "proposalStartDate": "2026-05",
       "proposalEndDate": "2026-10",
+      "proposalSent": true
+    },
+    {
+      "name": "CCC",
+      "fullName": "Clergy Community Coalition",
+      "stage": "contract-drafted",
+      "dealValue": 70750,
+      "monthlyValue": 11792,
+      "duration": "6 months",
+      "probability": 90,
+      "contact": "Pastor Mayra Macedo-Nolan",
+      "notes": "Verbal commitment received April 28, 2026 — contract being drafted. Start date May 18, 2026. Six-month engagement, May–November 2026. Two components: (1) Core engagement — 3-Year Fundraising Growth Plan, $60,250 billed monthly, single integrated deliverable at Month 6 covering pipeline, people, donor journey, systems, and growth potential. (2) Bloomerang infrastructure & dev ops add-on, $10,500 standalone project fee, led by Kelly Braunegg. Total $70,750. Replaces $1.3M in expiring Eaton Fire crisis funding by 2027. Contact: Pastor Mayra Macedo-Nolan (ED); Nancy Stiles (Advancement Committee Chair) cc'd.",
+      "proposalStartDate": "2026-05",
+      "proposalEndDate": "2026-11",
       "proposalSent": true
     }
   ],
@@ -119,6 +133,10 @@
       "label": "Verbal Commit"
     },
     {
+      "id": "contract-drafted",
+      "label": "Contract Drafted"
+    },
+    {
       "id": "closed-won",
       "label": "Closed Won"
     },
@@ -128,6 +146,14 @@
     }
   ],
   "changeLog": [
+    {
+      "date": "2026-04-28",
+      "changes": [
+        "ALDF Interim HoMG moved from Negotiation to Contract Drafted — verbal commitment received, contract being drafted, May 11 start date (probability 70 → 90)",
+        "Clergy Community Coalition (CCC) added to pipeline at Contract Drafted — $70,750 total ($60,250 core 3-Year Fundraising Growth Plan + $10,500 Bloomerang add-on led by Kelly Braunegg), 6 months, May 18 – November 2026",
+        "New BD stage added: 'Contract Drafted' (between Verbal Commit and Closed Won)"
+      ]
+    },
     {
       "date": "2026-04-22",
       "changes": [
@@ -181,9 +207,9 @@
   "ytdRevenue": {
     "amount": 196900.0,
     "year": 2026,
-    "asOf": "2026-04-17T21:00:05+00:00",
+    "asOf": "2026-04-24T21:00:03+00:00",
     "fromDate": "2026-01-01",
-    "toDate": "2026-04-17",
+    "toDate": "2026-04-24",
     "basis": "cash",
     "source": "Xero P&L (cash basis, paymentsOnly=true)",
     "org": "LPM Consulting"
