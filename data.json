@@ -92,12 +92,12 @@
       "stage": "contract-drafted",
       "dealValue": 107500,
       "monthlyValue": 13000,
-      "duration": "6-month runway (month-to-month ongoing)",
+      "duration": "Initial 6-month contract (open-ended thereafter)",
       "probability": 90,
       "contact": "Susan Halteman",
-      "notes": "Verbal commitment received April 28, 2026 — contract being drafted. Start date May 11, 2026. Additive to existing ALDF engagements — does not replace Phase 1 or Phase 2. Three workstreams: (1) Buildout Phase — pipeline assessment + portfolio restructuring, $13,500 one-time, 2 months. (2) KPI Dashboard & Moves Management Tool, $16,000 one-time, 2 months. (3) Interim Head of Major Gifts, $13,000/month month-to-month ongoing while ALDF searches for permanent HoMG. Lauren Phipps (CFRE, Obama Foundation) delivering day-to-day; Leya provides strategic oversight.",
+      "notes": "Verbal commitment received April 28, 2026 — contract being drafted. Start date May 11, 2026. Initial 6-month contract through November 2026; open-ended continuation thereafter while ALDF searches for permanent HoMG. Additive to existing ALDF engagements — does not replace Phase 1 or Phase 2. Three workstreams: (1) Buildout Phase — pipeline assessment + portfolio restructuring, $13,500 one-time, 2 months. (2) KPI Dashboard & Moves Management Tool, $16,000 one-time, 2 months. (3) Interim Head of Major Gifts, $13,000/month month-to-month ongoing. Lauren Phipps (CFRE, Obama Foundation) delivering day-to-day; Leya provides strategic oversight.",
       "proposalStartDate": "2026-05",
-      "proposalEndDate": "2026-10",
+      "proposalEndDate": "2026-11",
       "proposalSent": true
     },
     {
@@ -149,7 +149,7 @@
     {
       "date": "2026-04-28",
       "changes": [
-        "ALDF Interim HoMG moved from Negotiation to Contract Drafted — verbal commitment received, contract being drafted, May 11 start date (probability 70 → 90)",
+        "ALDF Interim HoMG moved from Negotiation to Contract Drafted — verbal commitment received, contract being drafted, May 11 start date, initial 6-month term through Nov 2026 with open-ended continuation (probability 70 → 90)",
         "Clergy Community Coalition (CCC) added to pipeline at Contract Drafted — $70,750 total ($60,250 core 3-Year Fundraising Growth Plan + $10,500 Bloomerang add-on led by Kelly Braunegg), 6 months, May 18 – November 2026",
         "New BD stage added: 'Contract Drafted' (between Verbal Commit and Closed Won)"
       ]
