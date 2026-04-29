@@ -113,9 +113,9 @@
   /* --- Revenue Summary Cards --- */
   .summary-row {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    max-width: 1280px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    max-width: 1320px;
     margin: 0 auto 50px;
     padding: 0 24px;
   }
@@ -123,7 +123,7 @@
     background: #fff;
     border: 2px solid var(--periwinkle);
     border-radius: var(--radius-card);
-    padding: 24px;
+    padding: 22px 16px;
     text-align: center;
     box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
     transition: box-shadow 0.2s, transform 0.2s;
@@ -149,9 +149,10 @@
   }
   .summary-card .value {
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: 1.75rem;
     color: var(--blueberry);
     font-weight: 400;
+    white-space: nowrap;
   }
   .summary-card .sub {
     font-size: 13px;
@@ -188,7 +189,7 @@
     box-shadow: 0 8px 32px rgba(56, 75, 207, 0.12);
   }
   .summary-detail-panel.open {
-    max-height: 600px;
+    max-height: 900px;
     padding: 28px 32px;
     opacity: 1;
   }
@@ -660,6 +661,7 @@
   @media (max-width: 1024px) {
     .pipeline-board { grid-template-columns: repeat(3, 1fr); }
     .summary-row { grid-template-columns: repeat(2, 1fr); }
+    .summary-card .value { font-size: 2rem; }
   }
   @media (max-width: 768px) {
     .hero h1 { font-size: 2rem; }
@@ -839,6 +841,44 @@ function getGanttMonths() {
   return monthsBetween(earliest, forecastEnd);
 }
 
+// ---- Projected 2026 Revenue ----
+// Confirmed retainer revenue for 2026 + full pipeline deal value falling in 2026 months
+function calculateProjected2026Revenue() {
+  const months2026 = monthsBetween('2026-01', '2026-12');
+
+  const confirmedByClient = [];
+  let confirmedTotal = 0;
+  CLIENTS.forEach(c => {
+    let monthsCount = 0;
+    months2026.forEach(m => {
+      if (m >= c.startDate && m <= c.endDate) monthsCount++;
+    });
+    if (monthsCount > 0) {
+      const total = monthsCount * c.monthlyValue;
+      confirmedByClient.push({ name: c.fullName, total, months: monthsCount, monthly: c.monthlyValue });
+      confirmedTotal += total;
+    }
+  });
+
+  const pipelineByOpp = [];
+  let pipelineTotal = 0;
+  PIPELINE.forEach(p => {
+    if (p.stage === 'closed-lost' || p.stage === 'closed-won') return;
+    if (!p.proposalStartDate || !p.proposalEndDate || !p.monthlyValue) return;
+    let monthsCount = 0;
+    months2026.forEach(m => {
+      if (m >= p.proposalStartDate && m <= p.proposalEndDate) monthsCount++;
+    });
+    if (monthsCount > 0) {
+      const total = monthsCount * p.monthlyValue;
+      pipelineByOpp.push({ name: p.fullName, total, months: monthsCount, monthly: p.monthlyValue, stage: p.stage });
+      pipelineTotal += total;
+    }
+  });
+
+  return { total: confirmedTotal + pipelineTotal, confirmedTotal, pipelineTotal, confirmedByClient, pipelineByOpp };
+}
+
 // ---- Summary Cards ----
 let activeSummaryPanel = null;
 
@@ -938,6 +978,44 @@ function toggleSummaryDetail(panelId) {
     html += '</ul>';
   }
 
+  else if (panelId === 'projected') {
+    const proj = calculateProjected2026Revenue();
+    const stageLabels = { 'discovery': 'Discovery', 'proposal-sent': 'Proposal Sent', 'negotiation': 'Negotiation', 'verbal-commitment': 'Verbal Commit', 'contract-drafted': 'Contract Drafted' };
+    html = '<div class="detail-title">Projected 2026 Revenue Breakdown</div><ul class="detail-list">';
+    html += `<li style="padding-top:6px;">
+      <span class="detail-org" style="color:var(--blueberry); text-transform:uppercase; letter-spacing:0.5px; font-size:12px;">Confirmed Engagements</span>
+      <span class="detail-amount">$${proj.confirmedTotal.toLocaleString()}</span>
+    </li>`;
+    proj.confirmedByClient.forEach(c => {
+      html += `<li style="padding-left:16px;">
+        <span><span class="detail-org">${c.name}</span></span>
+        <span class="detail-right">
+          <span class="detail-meta">${c.months} mo &times; $${c.monthly.toLocaleString()}</span>
+          <span class="detail-amount">$${c.total.toLocaleString()}</span>
+        </span>
+      </li>`;
+    });
+    html += `<li style="padding-top:14px;">
+      <span class="detail-org" style="color:var(--blueberry); text-transform:uppercase; letter-spacing:0.5px; font-size:12px;">Pipeline (Full Deal Value)</span>
+      <span class="detail-amount">$${proj.pipelineTotal.toLocaleString()}</span>
+    </li>`;
+    proj.pipelineByOpp.forEach(p => {
+      html += `<li style="padding-left:16px;">
+        <span><span class="detail-org">${p.name}</span></span>
+        <span class="detail-right">
+          <span class="detail-meta">${p.months} mo &times; $${p.monthly.toLocaleString()}</span>
+          <span class="detail-amount">$${p.total.toLocaleString()}</span>
+          <span class="detail-badge pipeline-stage">${stageLabels[p.stage] || p.stage}</span>
+        </span>
+      </li>`;
+    });
+    html += `<li style="font-weight:700; border-top:2px solid var(--periwinkle); padding-top:14px;">
+      <span class="detail-org">Total Projected 2026</span>
+      <span class="detail-amount">$${proj.total.toLocaleString()}</span>
+    </li>`;
+    html += '</ul>';
+  }
+
   else if (panelId === 'weighted') {
     const activeOpps = PIPELINE.filter(p => p.stage !== 'closed-lost' && p.stage !== 'closed-won');
     const stageLabels = { 'discovery': 'Discovery', 'proposal-sent': 'Proposal Sent', 'negotiation': 'Negotiation', 'verbal-commitment': 'Verbal Commit', 'contract-drafted': 'Contract Drafted' };
@@ -1010,6 +1088,9 @@ function renderSummary() {
   let weightedPipeline = 0;
   activeOpps.forEach(p => weightedPipeline += p.dealValue * (p.probability / 100));
 
+  // Projected 2026 revenue (confirmed + full pipeline, both filtered to 2026 months)
+  const projected = calculateProjected2026Revenue();
+
   const ytdCardHTML = `
     <div class="summary-card">
       <div class="label">Revenue YTD ${ytdYear}</div>
@@ -1021,6 +1102,12 @@ function renderSummary() {
 
   container.innerHTML = `
     ${ytdCardHTML}
+    <div class="summary-card" data-panel="projected" onclick="toggleSummaryDetail('projected')">
+      <div class="label">Projected 2026 Revenue</div>
+      <div class="value">$${Math.round(projected.total).toLocaleString()}</div>
+      <div class="sub">Confirmed + full pipeline</div>
+      <div class="expand-hint">Click for details</div>
+    </div>
     <div class="summary-card" data-panel="revenue" onclick="toggleSummaryDetail('revenue')">
       <div class="label">Current Monthly Revenue</div>
       <div class="value">$${currentRevenue.toLocaleString()}</div>
