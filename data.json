@@ -2,15 +2,26 @@
   "lastUpdated": "2026-05-04",
   "clients": [
     {
-      "name": "ALDF",
-      "fullName": "Animal Legal Defense Fund",
+      "name": "ALDF Phase 1",
+      "fullName": "Animal Legal Defense Fund — Phase 1",
       "monthlyValue": 42367,
       "startDate": "2025-11",
+      "endDate": "2026-04",
+      "renewalStatus": "renewed",
+      "renewalLabel": "Phase 1 Complete (Bridge Signed)",
+      "contact": "Susan Halteman",
+      "notes": "Phase 1 stabilization engagement: Nov 17 2025 - May 15 2026. 6 × $42,367 = $254,200 base compensation per signed contract. Workstreams: Interim data and systems management, Strategic Advisory, Ecosystem Assessment & Recommendations (delivered Jan 2026). Bridge extension via Amendment No. 1 — see ALDF Bridge entry."
+    },
+    {
+      "name": "ALDF Bridge",
+      "fullName": "Animal Legal Defense Fund — Amendment No. 1 (Bridge)",
+      "monthlyValue": 32213,
+      "startDate": "2026-05",
       "endDate": "2026-06",
       "renewalStatus": "renewed",
-      "renewalLabel": "Amendment Signed (thru Jun 30)",
+      "renewalLabel": "Bridge Active (thru Jun 30)",
       "contact": "Susan Halteman",
-      "notes": "Phase 1 (Nov 17 2025 - May 15 2026) complete: 6 × $42,367 = $254,200. Amendment No. 1 signed May 15, 2026 extends engagement through June 30, 2026 at $33,950/mo (data/systems mgmt $28K reduced from $33.5K + strategic advisory $5,950) + one-time $13,500 Pipeline Assessment & Portfolio Restructuring (2-month project). Ecosystem Assessment workstream complete. Total amendment value: $64,425. Phase 2 (Jul-Dec 2026+) still in pipeline."
+      "notes": "Amendment No. 1 signed May 15, 2026. Bridge extension May 15 - June 30, 2026. Recurring monthly $33,950 (Interim data/systems mgmt $28K, reduced from $33.5K + Strategic Advisory $5,950) + one-time $13,500 Pipeline Assessment & Portfolio Restructuring (2-month project). Total $64,425 across 1.5 months. Monthly figure shown is blended ($64,425 / 2 calendar months). Invoice schedule: May 15 ($33,950 + $13,500), June 15 ($16,975 prorated). Ecosystem Assessment workstream complete. Phase 2 (Jul-Dec 2026+) still in pipeline."
     },
     {
       "name": "CreativeMornings",
@@ -153,6 +164,8 @@
         "Amendment terms: data/systems mgmt reduced from $33,500 → $28,000/mo; strategic advisory continues at $5,950/mo; Ecosystem Assessment workstream complete",
         "New ALDF workstream added: Pipeline Assessment & Portfolio Restructuring — $13,500 one-time, 2-month project (invoiced May 15)",
         "Total amendment value: $64,425 (May 15: $33,950 + $13,500; June 15: $16,975 prorated)",
+        "ALDF active client split into two entries for accurate revenue math: 'ALDF Phase 1' (Nov 25 - Apr 26, $42,367/mo × 6 = $254,202 — matches signed contract base of $254,200) + 'ALDF Bridge' (May - Jun 26, $32,213/mo × 2 = $64,426 blended monthly representing $64,425 amendment total)",
+        "Phase 1 endDate corrected from 2026-05 to 2026-04 (was overcounting by one month / $42,367)",
         "ALDF Phase 2 pipeline entry updated: start date shifted from June → July 2026 (post-bridge); deal value unchanged at $270K"
       ]
     },
