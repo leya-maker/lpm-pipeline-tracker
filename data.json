@@ -1,16 +1,16 @@
 {
-  "lastUpdated": "2026-04-28",
+  "lastUpdated": "2026-05-04",
   "clients": [
     {
       "name": "ALDF",
       "fullName": "Animal Legal Defense Fund",
       "monthlyValue": 42367,
       "startDate": "2025-11",
-      "endDate": "2026-05",
-      "renewalStatus": "verbal-commitment",
-      "renewalLabel": "Verbal Commitment",
+      "endDate": "2026-06",
+      "renewalStatus": "renewed",
+      "renewalLabel": "Amendment Signed (thru Jun 30)",
       "contact": "Susan Halteman",
-      "notes": "6 payments of $42,367. Strategic advisory + dev ops. Phase 2 verbal commitment received — see pipeline."
+      "notes": "Phase 1 (Nov 17 2025 - May 15 2026) complete: 6 × $42,367 = $254,200. Amendment No. 1 signed May 15, 2026 extends engagement through June 30, 2026 at $33,950/mo (data/systems mgmt $28K reduced from $33.5K + strategic advisory $5,950) + one-time $13,500 Pipeline Assessment & Portfolio Restructuring (2-month project). Ecosystem Assessment workstream complete. Total amendment value: $64,425. Phase 2 (Jul-Dec 2026+) still in pipeline."
     },
     {
       "name": "CreativeMornings",
@@ -78,11 +78,11 @@
       "stage": "verbal-commitment",
       "dealValue": 270000,
       "monthlyValue": 20769,
-      "duration": "Jun 2026 - Dec 2026 (potential Jan-Jun 2027 extension)",
+      "duration": "Jul 2026 - Dec 2026 (potential Jan-Jun 2027 extension)",
       "probability": 80,
       "contact": "Susan Halteman",
-      "notes": "Phase 1 ends May 31. Susan requested continuation in writing. Three service lines: Gift Processing ($112K, Jun-Sep), Prospect Research ($58K, Jul-Dec), Strategic Advisory ($70K, Jun-Dec + potential $30K extension Jan-Jun 2027). Confirmed scope: $240K. With advisory extension: $270K.",
-      "proposalStartDate": "2026-06",
+      "notes": "Bridge in place via Amendment No. 1 (extends Phase 1 services through June 30, 2026 + adds pipeline assessment). Phase 2 picks up July 1, 2026. Three service lines: Gift Processing ($112K, Jul-Sep), Prospect Research ($58K, Jul-Dec), Strategic Advisory ($70K, Jul-Dec + potential $30K extension Jan-Jun 2027). Confirmed scope: $240K. With advisory extension: $270K.",
+      "proposalStartDate": "2026-07",
       "proposalEndDate": "2027-06",
       "proposalSent": false
     },
@@ -147,6 +147,16 @@
   ],
   "changeLog": [
     {
+      "date": "2026-05-04",
+      "changes": [
+        "ALDF Amendment No. 1 signed (effective May 15, 2026) — engagement extended through June 30, 2026; renewal status: verbal-commitment → renewed",
+        "Amendment terms: data/systems mgmt reduced from $33,500 → $28,000/mo; strategic advisory continues at $5,950/mo; Ecosystem Assessment workstream complete",
+        "New ALDF workstream added: Pipeline Assessment & Portfolio Restructuring — $13,500 one-time, 2-month project (invoiced May 15)",
+        "Total amendment value: $64,425 (May 15: $33,950 + $13,500; June 15: $16,975 prorated)",
+        "ALDF Phase 2 pipeline entry updated: start date shifted from June → July 2026 (post-bridge); deal value unchanged at $270K"
+      ]
+    },
+    {
       "date": "2026-04-28",
       "changes": [
         "ALDF Interim HoMG moved from Negotiation to Contract Drafted — verbal commitment received, contract being drafted, May 11 start date, initial 6-month term through Nov 2026 with open-ended continuation (probability 70 → 90)",
@@ -208,9 +218,9 @@
   "ytdRevenue": {
     "amount": 196900.0,
     "year": 2026,
-    "asOf": "2026-04-24T21:00:03+00:00",
+    "asOf": "2026-05-01T21:00:07+00:00",
     "fromDate": "2026-01-01",
-    "toDate": "2026-04-24",
+    "toDate": "2026-05-01",
     "basis": "cash",
     "source": "Xero P&L (cash basis, paymentsOnly=true)",
     "org": "LPM Consulting"
