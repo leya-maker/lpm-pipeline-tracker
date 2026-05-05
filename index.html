@@ -820,6 +820,33 @@ function monthsBetween(start, end) {
   return keys;
 }
 
+// Date format helpers — support YYYY-MM (month-only) and YYYY-MM-DD (day-precision)
+function monthOf(dateStr) {
+  return dateStr.slice(0, 7);
+}
+function asFullStartDate(dateStr) {
+  return dateStr.length > 7 ? dateStr : dateStr + '-01';
+}
+function asFullEndDate(dateStr) {
+  if (dateStr.length > 7) return dateStr;
+  const [y, m] = dateStr.split('-').map(Number);
+  const lastDay = new Date(y, m, 0).getDate();
+  return dateStr + '-' + String(lastDay).padStart(2, '0');
+}
+function todayDayString() {
+  const y = TODAY.getFullYear();
+  const m = String(TODAY.getMonth() + 1).padStart(2, '0');
+  const d = String(TODAY.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + d;
+}
+function isClientActiveToday(c) {
+  const t = todayDayString();
+  return asFullStartDate(c.startDate) <= t && asFullEndDate(c.endDate) >= t;
+}
+function clientActiveInMonth(c, monthKey) {
+  return monthKey >= monthOf(c.startDate) && monthKey <= monthOf(c.endDate);
+}
+
 // Generate 12 months from current month
 function getForecastMonths() {
   const months = [];
@@ -836,7 +863,7 @@ function getForecastMonths() {
 // Generate Gantt timeline months (from earliest start to 12 months out)
 function getGanttMonths() {
   let earliest = '2099-12';
-  CLIENTS.forEach(c => { if (c.startDate < earliest) earliest = c.startDate; });
+  CLIENTS.forEach(c => { if (monthOf(c.startDate) < earliest) earliest = monthOf(c.startDate); });
   const forecastEnd = getForecastMonths().pop();
   return monthsBetween(earliest, forecastEnd);
 }
@@ -851,10 +878,17 @@ function calculateProjected2026Revenue() {
   CLIENTS.forEach(c => {
     let monthsCount = 0;
     months2026.forEach(m => {
-      if (m >= c.startDate && m <= c.endDate) monthsCount++;
+      if (clientActiveInMonth(c, m)) monthsCount++;
     });
     if (monthsCount > 0) {
-      const total = monthsCount * c.monthlyValue;
+      // For contracts entirely within 2026, totalContractValue overrides months × monthly
+      // (used for irregular billing like one-time fees + partial months).
+      const startsIn2026 = monthOf(c.startDate) >= '2026-01';
+      const endsIn2026 = monthOf(c.endDate) <= '2026-12';
+      const fullyIn2026 = startsIn2026 && endsIn2026;
+      const total = (fullyIn2026 && c.totalContractValue !== undefined)
+        ? c.totalContractValue
+        : monthsCount * c.monthlyValue;
       confirmedByClient.push({ name: c.fullName, total, months: monthsCount, monthly: c.monthlyValue });
       confirmedTotal += total;
     }
@@ -902,7 +936,7 @@ function toggleSummaryDetail(panelId) {
   let html = '';
 
   if (panelId === 'revenue') {
-    const activeClients = CLIENTS.filter(c => c.startDate <= currentMonth && c.endDate >= currentMonth);
+    const activeClients = CLIENTS.filter(c => isClientActiveToday(c));
     html = '<div class="detail-title">Active Engagements This Month</div><ul class="detail-list">';
     activeClients.forEach(c => {
       html += `<li>
@@ -923,9 +957,12 @@ function toggleSummaryDetail(panelId) {
   }
 
   else if (panelId === 'ending') {
+    const parseEndDate = (c) => {
+      const ep = asFullEndDate(c.endDate).split('-');
+      return new Date(parseInt(ep[0]), parseInt(ep[1]) - 1, parseInt(ep[2]));
+    };
     const endingClients = CLIENTS.filter(c => {
-      const endParts = c.endDate.split('-');
-      const endDate = new Date(endParts[0], endParts[1] - 1, 28);
+      const endDate = parseEndDate(c);
       const diffDays = (endDate - TODAY) / (1000 * 60 * 60 * 24);
       return diffDays >= 0 && diffDays <= 60;
     });
@@ -933,8 +970,7 @@ function toggleSummaryDetail(panelId) {
     endingClients.forEach(c => atRisk += c.monthlyValue);
     html = '<div class="detail-title">Contracts Ending Within 60 Days</div><ul class="detail-list">';
     endingClients.forEach(c => {
-      const endParts = c.endDate.split('-');
-      const endDate = new Date(endParts[0], endParts[1] - 1, 28);
+      const endDate = parseEndDate(c);
       const diffDays = Math.round((endDate - TODAY) / (1000 * 60 * 60 * 24));
       html += `<li>
         <span><span class="detail-org">${c.fullName}</span><span class="detail-contact">${c.contact}</span></span>
@@ -1068,13 +1104,13 @@ function renderSummary() {
 
   // Current monthly revenue
   let currentRevenue = 0;
-  const activeClients = CLIENTS.filter(c => c.startDate <= currentMonth && c.endDate >= currentMonth);
+  const activeClients = CLIENTS.filter(c => isClientActiveToday(c));
   activeClients.forEach(c => currentRevenue += c.monthlyValue);
 
   // Contracts ending within 60 days
   const endingClients = CLIENTS.filter(c => {
-    const endParts = c.endDate.split('-');
-    const endDate = new Date(endParts[0], endParts[1] - 1, 28);
+    const ep = asFullEndDate(c.endDate).split('-');
+    const endDate = new Date(parseInt(ep[0]), parseInt(ep[1]) - 1, parseInt(ep[2]));
     const diffDays = (endDate - TODAY) / (1000 * 60 * 60 * 24);
     return diffDays >= 0 && diffDays <= 60;
   });
@@ -1162,8 +1198,8 @@ function renderGantt() {
 
     months.forEach(m => {
       const isCurrent = m === currentMonth;
-      const isActive = m >= client.startDate && m <= client.endDate;
-      const isEndMonth = m === client.endDate;
+      const isActive = clientActiveInMonth(client, m);
+      const isEndMonth = m === monthOf(client.endDate);
       const bgStyle = isCurrent ? 'background:rgba(223,255,0,0.18);' : '';
 
       if (isActive) {
@@ -1228,7 +1264,7 @@ function renderForecast() {
     let potential = 0;
 
     CLIENTS.forEach(c => {
-      if (m >= c.startDate && m <= c.endDate) {
+      if (clientActiveInMonth(c, m)) {
         confirmed += c.monthlyValue;
       }
     });

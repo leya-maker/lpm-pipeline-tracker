@@ -1,27 +1,28 @@
 {
-  "lastUpdated": "2026-05-04",
+  "lastUpdated": "2026-05-05",
   "clients": [
     {
       "name": "ALDF Phase 1",
       "fullName": "Animal Legal Defense Fund — Phase 1",
       "monthlyValue": 42367,
-      "startDate": "2025-11",
-      "endDate": "2026-04",
+      "startDate": "2025-11-17",
+      "endDate": "2026-05-15",
       "renewalStatus": "renewed",
       "renewalLabel": "Phase 1 Complete (Bridge Signed)",
       "contact": "Susan Halteman",
-      "notes": "Phase 1 stabilization engagement: Nov 17 2025 - May 15 2026. 6 × $42,367 = $254,200 base compensation per signed contract. Workstreams: Interim data and systems management, Strategic Advisory, Ecosystem Assessment & Recommendations (delivered Jan 2026). Bridge extension via Amendment No. 1 — see ALDF Bridge entry."
+      "notes": "Phase 1 stabilization engagement: Nov 17, 2025 - May 15, 2026 per signed Services Agreement. 6 monthly installments × $42,367 = $254,200 base compensation. Workstreams: Interim data and systems management, Strategic Advisory, Ecosystem Assessment & Recommendations (delivered Jan 2026). Continues into Bridge extension via Amendment No. 1 — see ALDF Bridge entry."
     },
     {
       "name": "ALDF Bridge",
       "fullName": "Animal Legal Defense Fund — Amendment No. 1 (Bridge)",
-      "monthlyValue": 32213,
-      "startDate": "2026-05",
-      "endDate": "2026-06",
+      "monthlyValue": 33950,
+      "totalContractValue": 64425,
+      "startDate": "2026-05-15",
+      "endDate": "2026-06-30",
       "renewalStatus": "renewed",
       "renewalLabel": "Bridge Active (thru Jun 30)",
       "contact": "Susan Halteman",
-      "notes": "Amendment No. 1 signed May 15, 2026. Bridge extension May 15 - June 30, 2026. Recurring monthly $33,950 (Interim data/systems mgmt $28K, reduced from $33.5K + Strategic Advisory $5,950) + one-time $13,500 Pipeline Assessment & Portfolio Restructuring (2-month project). Total $64,425 across 1.5 months. Monthly figure shown is blended ($64,425 / 2 calendar months). Invoice schedule: May 15 ($33,950 + $13,500), June 15 ($16,975 prorated). Ecosystem Assessment workstream complete. Phase 2 (Jul-Dec 2026+) still in pipeline."
+      "notes": "Amendment No. 1 signed May 15, 2026. Bridge extension May 15 - June 30, 2026 (1.5 months). Recurring monthly $33,950 = Interim data/systems mgmt $28,000 (reduced from $33,500) + Strategic Advisory $5,950. One-time $13,500 Pipeline Assessment & Portfolio Restructuring (2-month project). Invoice schedule: May 15 ($33,950 monthly + $13,500 one-time), June 15 ($16,975 prorated half-month). Total amendment value: $64,425. Ecosystem Assessment workstream complete. Phase 2 (Jul-Dec 2026+) still in pipeline."
     },
     {
       "name": "CreativeMornings",
@@ -164,8 +165,9 @@
         "Amendment terms: data/systems mgmt reduced from $33,500 → $28,000/mo; strategic advisory continues at $5,950/mo; Ecosystem Assessment workstream complete",
         "New ALDF workstream added: Pipeline Assessment & Portfolio Restructuring — $13,500 one-time, 2-month project (invoiced May 15)",
         "Total amendment value: $64,425 (May 15: $33,950 + $13,500; June 15: $16,975 prorated)",
-        "ALDF active client split into two entries for accurate revenue math: 'ALDF Phase 1' (Nov 25 - Apr 26, $42,367/mo × 6 = $254,202 — matches signed contract base of $254,200) + 'ALDF Bridge' (May - Jun 26, $32,213/mo × 2 = $64,426 blended monthly representing $64,425 amendment total)",
-        "Phase 1 endDate corrected from 2026-05 to 2026-04 (was overcounting by one month / $42,367)",
+        "ALDF active client split into two entries with day-precision dates per actual contracts: 'ALDF Phase 1' (Nov 17 2025 - May 15 2026, $42,367/mo) + 'ALDF Bridge' (May 15 - Jun 30 2026, $33,950/mo recurring + $13,500 one-time)",
+        "Schema: added optional 'totalContractValue' field to override months × monthly auto-calc for irregular billing (used on Bridge: $64,425 fixed)",
+        "Schema: dates now support YYYY-MM-DD (day-precision) alongside YYYY-MM (month-only) — index.html updated to handle both",
         "ALDF Phase 2 pipeline entry updated: start date shifted from June → July 2026 (post-bridge); deal value unchanged at $270K"
       ]
     },
