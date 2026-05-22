@@ -20,9 +20,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-REPO = Path("/Users/leyapetrovanimiller/dev/lpm-pipeline-tracker")
+REPO = Path("/Users/leyapetrovanimiller/LPM-AI-coding-projects/websites/pipeline-tracker")
 DATA_FILE = REPO / "data.json"
-BOOKKEEPER = Path("/Users/leyapetrovanimiller/dev/bookkeeper-ai")
+BOOKKEEPER = Path("/Users/leyapetrovanimiller/LPM-AI-coding-projects/agent-implementations/bookkeeper")
 PYTHON = BOOKKEEPER / ".venv" / "bin" / "python"
 
 

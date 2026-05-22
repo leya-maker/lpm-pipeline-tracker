@@ -26,7 +26,7 @@ STATICRYPT_CONFIG = REPO / ".staticrypt.json"
 OUTPUT = REPO / "pnl.html"
 PLAIN_TMP = REPO / ".pnl.plain.tmp.html"
 
-BOOKKEEPER = Path.home() / "dev" / "bookkeeper-ai"
+BOOKKEEPER = Path.home() / "LPM-AI-coding-projects" / "agent-implementations" / "bookkeeper"
 PASSWORD = os.environ.get("PNL_DASHBOARD_PASSWORD", "lpm2026")
 
 
