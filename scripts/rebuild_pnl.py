@@ -148,6 +148,12 @@ def git_commit_and_push(year: int) -> None:
     run(["git", "add", "pnl.html", ".staticrypt.json"], cwd=REPO)
     msg = f"Refresh P&L dashboard ({date.today().isoformat()})"
     run(["git", "commit", "-m", msg], cwd=REPO)
+    # The pipeline-tracker repo has several writers (pnl-rebuild, ytd-revenue-
+    # sync, the pipeline-tracker skill), so a push can be rejected if another
+    # writer pushed first. Rebase the fresh commit onto the remote before
+    # pushing. --autostash keeps the rebase working even if the repo has
+    # unrelated uncommitted changes in the working tree.
+    run(["git", "pull", "--rebase", "--autostash"], cwd=REPO)
     run(["git", "push"], cwd=REPO)
     print(f"Pushed: {msg}")
 
