@@ -7,7 +7,7 @@
 # paths unchanged; this wrapper only adds the failure notification.
 set -uo pipefail
 
-NOTIFY="${HOME}/Library/Application Support/LPM-Rose/lib/notify.py"
+NOTIFY="${HOME}/LPM-AI-coding-projects/agent-implementations/rose/lib/notify.py"
 SCRIPT="${HOME}/LPM-AI-coding-projects/websites/pipeline-tracker/scripts/rebuild_pnl.py"
 STDERR_LOG="${HOME}/LPM-AI-coding-projects/lpm-agents-core/pipeline-reports/logs/stderr.log"
 
