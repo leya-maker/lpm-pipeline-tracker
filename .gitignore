@@ -1,3 +1,8 @@
 pnl-actuals.json
 .pnl.plain.tmp.html
 .staticrypt_out/
+# data.json holds client names, contacts, and contract values. It is the local
+# source of truth, baked into the encrypted index.html by rebuild_pipeline.py
+# and never served publicly.
+data.json
+.pipeline.plain.tmp.html

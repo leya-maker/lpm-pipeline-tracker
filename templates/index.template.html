@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LPM Pipeline & Revenue Tracker</title>
+<style>
+  /* --- Font Loading --- */
+  @font-face {
+    font-family: 'King and Queen';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/King and Queen/KingandQueen-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'King and Queen';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/King and Queen/KingandQueen-SemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Work Sans';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/Work Sans/WorkSans-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Work Sans';
+    src: url('https://deploy-preview-1--lpm-consulting.netlify.app/uploads/Work Sans/WorkSans-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+  }
+
+  /* --- CSS Variables --- */
+  :root {
+    --blueberry: #384BCF;
+    --cornflower: #717FEF;
+    --periwinkle: #C5CBFF;
+    --lime: #DFFF00;
+    --mint: #EBFFD6;
+    --gardenia: #FFFFF6;
+    --ink: #333333;
+    --font-display: 'King and Queen', Georgia, serif;
+    --font-body: 'Work Sans', system-ui, sans-serif;
+    --radius-pill: 100px;
+    --radius-card: 16px;
+  }
+
+  /* --- Reset --- */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--gardenia);
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* --- Hero --- */
+  .hero {
+    text-align: center;
+    padding: 60px 24px 40px;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 40px;
+    background: var(--lime);
+    border-radius: 2px;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 2.8rem;
+    color: var(--blueberry);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .hero .subhead {
+    font-size: 1.15rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 400;
+  }
+  .hero .last-updated {
+    font-size: 13px;
+    color: #999;
+    margin-top: 8px;
+  }
+
+  /* --- Arch Divider --- */
+  .arch-divider {
+    width: 120px;
+    height: 60px;
+    border: 3px solid var(--periwinkle);
+    border-bottom: none;
+    border-radius: 120px 120px 0 0;
+    margin: 0 auto 40px;
+  }
+
+  /* --- Revenue Summary Cards --- */
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    max-width: 1320px;
+    margin: 0 auto 50px;
+    padding: 0 24px;
+  }
+  .summary-card {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: var(--radius-card);
+    padding: 22px 16px;
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+  }
+  .summary-card:hover {
+    box-shadow: 0 12px 40px rgba(56, 75, 207, 0.14);
+    transform: translateY(-2px);
+  }
+  .summary-card.expanded {
+    border-color: var(--blueberry);
+    box-shadow: 0 12px 40px rgba(56, 75, 207, 0.18);
+  }
+  .summary-card .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .summary-card .value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--blueberry);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .summary-card .sub {
+    font-size: 13px;
+    color: #999;
+    margin-top: 4px;
+  }
+  .summary-card .expand-hint {
+    font-size: 11px;
+    color: var(--cornflower);
+    margin-top: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s;
+  }
+  .summary-card.expanded .expand-hint { display: none; }
+  .summary-card.alert .value { color: #d4380d; }
+  .summary-card.good .value { color: #389e0d; }
+
+  /* --- Detail Drawer (below summary cards) --- */
+  .summary-detail-drawer {
+    max-width: 1200px;
+    margin: -30px auto 50px;
+    padding: 0 24px;
+  }
+  .summary-detail-panel {
+    background: #fff;
+    border: 2px solid var(--blueberry);
+    border-radius: var(--radius-card);
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease, opacity 0.25s ease;
+    opacity: 0;
+    box-shadow: 0 8px 32px rgba(56, 75, 207, 0.12);
+  }
+  .summary-detail-panel.open {
+    max-height: 900px;
+    padding: 28px 32px;
+    opacity: 1;
+  }
+  .summary-detail-panel .detail-title {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--blueberry);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--periwinkle);
+  }
+  .detail-list {
+    list-style: none;
+    padding: 0;
+  }
+  .detail-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(197, 203, 255, 0.3);
+    font-size: 14px;
+  }
+  .detail-list li:last-child { border-bottom: none; }
+  .detail-list .detail-org {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .detail-list .detail-contact {
+    font-size: 12px;
+    color: #888;
+    margin-left: 8px;
+    font-weight: 400;
+  }
+  .detail-list .detail-amount {
+    font-weight: 700;
+    color: var(--blueberry);
+    white-space: nowrap;
+  }
+  .detail-list .detail-meta {
+    font-size: 12px;
+    color: #888;
+    margin-left: 12px;
+    white-space: nowrap;
+  }
+  .detail-list .detail-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-left: 10px;
+  }
+  .detail-badge.ending { background: rgba(212, 56, 13, 0.1); color: #d4380d; }
+  .detail-badge.pipeline-stage { background: rgba(56, 75, 207, 0.08); color: var(--blueberry); }
+  .detail-list .detail-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* --- Section Headers --- */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 0 24px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .section-header h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.8rem;
+    color: var(--blueberry);
+    letter-spacing: -0.01em;
+  }
+  .section-header .line {
+    flex: 1;
+    height: 2px;
+    background: var(--periwinkle);
+    border-radius: 1px;
+  }
+
+  /* --- Gantt Chart --- */
+  .gantt-container {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: var(--radius-card);
+    padding: 28px;
+    box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
+    overflow-x: auto;
+    position: relative;
+  }
+  .gantt-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .gantt-table th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #888;
+    font-weight: 600;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--periwinkle);
+    white-space: nowrap;
+  }
+  .gantt-table th.frozen,
+  .gantt-table td.frozen {
+    position: sticky;
+    background: #fff;
+    z-index: 2;
+  }
+  .gantt-table th.frozen { z-index: 3; }
+  .gantt-table .frozen-client { left: 0; min-width: 140px; }
+  .gantt-table .frozen-monthly { left: 140px; min-width: 90px; }
+  .gantt-table .frozen-renewal { left: 230px; min-width: 130px; box-shadow: 4px 0 8px rgba(56, 75, 207, 0.06); }
+  .gantt-table th.month-col {
+    text-align: center;
+    min-width: 70px;
+    padding: 8px 4px;
+  }
+  .gantt-table td {
+    padding: 10px 12px;
+    font-size: 14px;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(197, 203, 255, 0.4);
+  }
+  .gantt-table td.month-cell {
+    padding: 10px 2px;
+    position: relative;
+  }
+  .gantt-bar {
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.3px;
+    min-width: 100%;
+  }
+  .gantt-bar.active {
+    background: var(--blueberry);
+  }
+  .gantt-bar.winding-down {
+    background: linear-gradient(90deg, var(--blueberry), #888);
+  }
+  .gantt-bar.ending {
+    background: var(--cornflower);
+    opacity: 0.6;
+  }
+  .gantt-bar.continuing {
+    background: var(--lime);
+    color: var(--ink);
+  }
+  .gantt-bar.potential {
+    background: var(--cornflower);
+    opacity: 0.5;
+    border: 2px dashed var(--blueberry);
+  }
+  .client-name {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .client-revenue {
+    color: var(--blueberry);
+    font-weight: 600;
+  }
+
+  /* --- Renewal Status Badges --- */
+  .renewal-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .renewal-badge.no-conversation { background: rgba(212, 56, 13, 0.1); color: #d4380d; }
+  .renewal-badge.early-conversation { background: rgba(250, 173, 20, 0.15); color: #ad6800; }
+  .renewal-badge.proposal-sent { background: rgba(56, 75, 207, 0.1); color: var(--blueberry); }
+  .renewal-badge.verbal-yes { background: rgba(56, 158, 13, 0.1); color: #389e0d; }
+  .renewal-badge.renewed { background: rgba(56, 158, 13, 0.2); color: #237804; }
+  .renewal-badge.winding-down { background: rgba(140, 140, 140, 0.15); color: #666; }
+  .renewal-badge.complete { background: rgba(140, 140, 140, 0.1); color: #999; }
+
+  /* --- BD Pipeline --- */
+  .pipeline-board {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+  }
+  .pipeline-column {
+    background: rgba(197, 203, 255, 0.15);
+    border-radius: var(--radius-card);
+    padding: 16px 12px;
+    min-height: 200px;
+  }
+  .pipeline-column-header {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #888;
+    font-weight: 700;
+    text-align: center;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--periwinkle);
+  }
+  .pipeline-card {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(56, 75, 207, 0.06);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .pipeline-card:hover {
+    box-shadow: 0 8px 24px rgba(56, 75, 207, 0.12);
+    transform: translateY(-1px);
+  }
+  .pipeline-card .org-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .pipeline-card .deal-value {
+    font-size: 13px;
+    color: var(--blueberry);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .pipeline-card .deal-detail {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.5;
+  }
+  .pipeline-card .probability {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(56, 75, 207, 0.08);
+    color: var(--blueberry);
+  }
+  .pipeline-empty {
+    text-align: center;
+    color: #bbb;
+    font-size: 13px;
+    padding: 24px 8px;
+    font-style: italic;
+  }
+
+  /* --- Revenue Forecast Chart --- */
+  .forecast-container {
+    background: #fff;
+    border: 2px solid var(--periwinkle);
+    border-radius: var(--radius-card);
+    padding: 28px;
+    box-shadow: 0 2px 16px rgba(56, 75, 207, 0.07);
+  }
+  .chart-area {
+    position: relative;
+    height: 350px;
+    margin-top: 20px;
+  }
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    height: 300px;
+    gap: 8px;
+    padding-bottom: 0;
+    border-bottom: 2px solid var(--periwinkle);
+    position: relative;
+  }
+  .chart-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .chart-bar-stack {
+    width: 100%;
+    max-width: 60px;
+    display: flex;
+    flex-direction: column-reverse;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .chart-bar-stack:hover { opacity: 0.85; }
+  .chart-bar-segment {
+    width: 100%;
+    transition: height 0.5s ease;
+    position: relative;
+  }
+  .chart-bar-segment.confirmed { background: var(--blueberry); }
+  .chart-bar-segment.pipeline { background: var(--cornflower); opacity: 0.7; }
+  .chart-bar-segment.potential { background: var(--mint); border: 1.5px dashed var(--cornflower); border-bottom: none; }
+  .chart-month-label {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 600;
+    margin-top: 10px;
+    text-align: center;
+    letter-spacing: 0.3px;
+  }
+  .chart-value-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blueberry);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .chart-gridlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+  .chart-gridline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px dashed rgba(197, 203, 255, 0.6);
+  }
+  .chart-gridline-label {
+    position: absolute;
+    left: 8px;
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 600;
+    transform: translateY(-50%);
+  }
+  .chart-legend {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+  }
+  .chart-legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+  }
+  .chart-legend-swatch.confirmed { background: var(--blueberry); }
+  .chart-legend-swatch.pipeline { background: var(--cornflower); opacity: 0.7; }
+  .chart-legend-swatch.potential { background: var(--mint); border: 1.5px dashed var(--cornflower); }
+
+  /* --- Tooltip --- */
+  .tooltip {
+    display: none;
+    position: fixed;
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 280px;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .tooltip.visible { display: block; }
+
+  /* --- Footer --- */
+  footer {
+    background: var(--periwinkle);
+    color: var(--blueberry);
+    padding: 40px 24px 24px;
+    margin-top: 60px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .footer-brand {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--blueberry);
+  }
+  .footer-brand .tagline {
+    font-family: var(--font-body);
+    font-size: 13px;
+    margin-top: 6px;
+    opacity: 0.7;
+  }
+  .footer-links {
+    text-align: center;
+  }
+  .footer-links a, .footer-contact a {
+    display: block;
+    color: var(--blueberry);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    margin-bottom: 6px;
+  }
+  .footer-links a:hover, .footer-contact a:hover { opacity: 1; }
+  .footer-contact { text-align: right; }
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 20px auto 0;
+    padding-top: 16px;
+    border-top: 1px solid rgba(56, 75, 207, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 13px;
+    opacity: 0.6;
+  }
+  .footer-bottom img { height: 18px; width: 18px; }
+
+  /* --- Edit Hint --- */
+  .edit-hint {
+    text-align: center;
+    font-size: 12px;
+    color: #bbb;
+    margin-top: 20px;
+    font-style: italic;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 1200px) {
+    .summary-row { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 1024px) {
+    .pipeline-board { grid-template-columns: repeat(3, 1fr); }
+    .summary-row { grid-template-columns: repeat(2, 1fr); }
+    .summary-card .value { font-size: 2rem; }
+  }
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .pipeline-board { grid-template-columns: 1fr 1fr; }
+    .summary-row { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; text-align: center; }
+    .footer-contact { text-align: center; }
+    .footer-links { text-align: center; }
+  }
+  @media (max-width: 480px) {
+    .pipeline-board { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav style="display:flex;justify-content:center;gap:24px;padding:16px 24px;background:#fff;border-bottom:2px solid var(--periwinkle)">
+  <a href="index.html" style="font-family:var(--font-body);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;text-decoration:none;padding:6px 20px;border-radius:var(--radius-pill);background:var(--blueberry);color:#fff">Pipeline</a>
+  <a href="pnl.html" style="font-family:var(--font-body);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;text-decoration:none;color:#888;padding:6px 20px;border-radius:var(--radius-pill)">P&L Dashboard</a>
+  <a href="https://leya-maker.github.io/playground/time-tracker/" style="font-family:var(--font-body);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;text-decoration:none;color:#888;padding:6px 20px;border-radius:var(--radius-pill)">Time</a>
+</nav>
+
+<!-- Tooltip -->
+<div class="tooltip" id="tooltip"></div>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>Pipeline & Revenue Tracker</h1>
+  <p class="subhead">Active engagements, renewal status, business development pipeline, and 12-month revenue forecast</p>
+  <p class="last-updated">Last updated: <span id="lastUpdated"></span></p>
+</section>
+
+<div class="arch-divider"></div>
+
+<!-- Summary Cards -->
+<div class="summary-row" id="summaryRow"></div>
+
+<!-- Detail Drawer (expands below cards) -->
+<div class="summary-detail-drawer">
+  <div class="summary-detail-panel" id="summaryDetailPanel"></div>
+</div>
+
+<!-- Active Clients Gantt -->
+<section class="section">
+  <div class="section-header">
+    <h2>Active Engagements</h2>
+    <div class="line"></div>
+  </div>
+  <div class="gantt-container">
+    <table class="gantt-table" id="ganttTable"></table>
+  </div>
+</section>
+
+<!-- BD Pipeline -->
+<section class="section">
+  <div class="section-header">
+    <h2>Business Development Pipeline</h2>
+    <div class="line"></div>
+  </div>
+  <div class="pipeline-board" id="pipelineBoard"></div>
+</section>
+
+<!-- Revenue Forecast -->
+<section class="section">
+  <div class="section-header">
+    <h2>12-Month Revenue Forecast</h2>
+    <div class="line"></div>
+  </div>
+  <div class="forecast-container">
+    <div class="chart-area" id="chartArea">
+      <div class="chart-bars" id="chartBars"></div>
+    </div>
+    <div class="chart-legend">
+      <div class="chart-legend-item"><div class="chart-legend-swatch confirmed"></div> Confirmed Revenue</div>
+      <div class="chart-legend-item"><div class="chart-legend-swatch pipeline"></div> Pipeline (Proposal Sent)</div>
+      <div class="chart-legend-item"><div class="chart-legend-swatch potential"></div> BD Potential (In Conversation)</div>
+    </div>
+  </div>
+  <p class="edit-hint">Revenue forecast includes only confirmed contracts and proposals with defined terms.</p>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">LPM Consulting</div>
+      <p class="tagline">Pipeline & Revenue Intelligence</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/leyapmiller/" target="_blank">LinkedIn</a>
+      <a href="https://leyapm.com" target="_blank">Website</a>
+    </div>
+    <div class="footer-contact">
+      <a href="mailto:leya@leyapm.com">leya@leyapm.com</a>
+      <a href="https://calendar.app.google/Nfxd3vPv5pVtUvC29" target="_blank">Schedule a Call</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <img src="https://deploy-preview-1--lpm-consulting.netlify.app/uploads/Logos/Favicons/svg/Primary_Blue/Fav_Blue.svg" alt="LPM">
+    &copy; 2026 LPM Consulting. Internal use only.
+  </div>
+</footer>
+
+{{EMBEDDED_PIPELINE}}
+<script>
+// ============================================================
+// DATA SOURCE
+// The pipeline-tracker agent reads and writes data.json directly, but the
+// PUBLISHED page never serves data.json (it holds client names and contract
+// values). Instead rebuild_pipeline.py bakes data.json into this page as
+// window.BAKED_PIPELINE_DATA and StaticCrypt-encrypts the whole page, exactly
+// like the P&L dashboard. The fetch path below is only a local-dev fallback
+// for opening the raw template without baking.
+// ============================================================
+
+let TODAY, LAST_UPDATED, CLIENTS, PIPELINE, BD_STAGES, YTD_REVENUE;
+
+async function loadData() {
+  try {
+    const data = (typeof window !== 'undefined' && window.BAKED_PIPELINE_DATA)
+      ? window.BAKED_PIPELINE_DATA
+      : await (await fetch('data.json?v=' + Date.now())).json();
+    TODAY = new Date();
+    LAST_UPDATED = data.lastUpdated;
+    CLIENTS = data.clients;
+    PIPELINE = data.pipeline;
+    BD_STAGES = data.bdStages;
+    YTD_REVENUE = data.ytdRevenue || null;
+
+    document.getElementById('lastUpdated').textContent = LAST_UPDATED;
+    renderSummary();
+    renderGantt();
+    renderPipeline();
+    renderForecast();
+  } catch (e) {
+    console.error('Failed to load data.json:', e);
+    document.body.innerHTML = '<div style="text-align:center;padding:80px;font-family:sans-serif;color:#d4380d;"><h2>Failed to load pipeline data</h2><p>' + e.message + '</p></div>';
+  }
+}
+
+// ============================================================
+// RENDERING LOGIC
+// ============================================================
+
+// Month helpers
+function monthKey(date) {
+  const d = typeof date === 'string' ? new Date(date + '-01') : date;
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+function monthLabel(key) {
+  const [y, m] = key.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[parseInt(m) - 1] + ' ' + y.slice(2);
+}
+function monthsBetween(start, end) {
+  const keys = [];
+  let [sy, sm] = start.split('-').map(Number);
+  const [ey, em] = end.split('-').map(Number);
+  while (sy < ey || (sy === ey && sm <= em)) {
+    keys.push(sy + '-' + String(sm).padStart(2, '0'));
+    sm++;
+    if (sm > 12) { sm = 1; sy++; }
+  }
+  return keys;
+}
+
+// Date format helpers — support YYYY-MM (month-only) and YYYY-MM-DD (day-precision)
+function monthOf(dateStr) {
+  return dateStr.slice(0, 7);
+}
+function asFullStartDate(dateStr) {
+  return dateStr.length > 7 ? dateStr : dateStr + '-01';
+}
+function asFullEndDate(dateStr) {
+  if (dateStr.length > 7) return dateStr;
+  const [y, m] = dateStr.split('-').map(Number);
+  const lastDay = new Date(y, m, 0).getDate();
+  return dateStr + '-' + String(lastDay).padStart(2, '0');
+}
+function todayDayString() {
+  const y = TODAY.getFullYear();
+  const m = String(TODAY.getMonth() + 1).padStart(2, '0');
+  const d = String(TODAY.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + d;
+}
+function isClientActiveToday(c) {
+  const t = todayDayString();
+  return asFullStartDate(c.startDate) <= t && asFullEndDate(c.endDate) >= t;
+}
+function clientActiveInMonth(c, monthKey) {
+  return monthKey >= monthOf(c.startDate) && monthKey <= monthOf(c.endDate);
+}
+// A contract counts as "ending soon" only if it still needs a renewal decision.
+// Already-renewed engagements (e.g. ALDF, whose extension is signed), engagements that have
+// intentionally wound down (not-renewed, winding-down, complete), and one-time projects are
+// not at risk and should not raise the alert.
+function needsRenewalAttention(c) {
+  const settled = ['renewed', 'complete', 'not-renewed', 'winding-down'];
+  if (settled.includes(c.renewalStatus)) return false;
+  if (c.engagementType === 'project') return false;
+  return true;
+}
+
+// Generate 12 months from current month
+function getForecastMonths() {
+  const months = [];
+  let y = TODAY.getFullYear();
+  let m = TODAY.getMonth() + 1;
+  for (let i = 0; i < 12; i++) {
+    months.push(y + '-' + String(m).padStart(2, '0'));
+    m++;
+    if (m > 12) { m = 1; y++; }
+  }
+  return months;
+}
+
+// Generate Gantt timeline months (from earliest start to 12 months out)
+function getGanttMonths() {
+  let earliest = '2099-12';
+  CLIENTS.forEach(c => { if (monthOf(c.startDate) < earliest) earliest = monthOf(c.startDate); });
+  const forecastEnd = getForecastMonths().pop();
+  return monthsBetween(earliest, forecastEnd);
+}
+
+// ---- Projected 2026 Revenue ----
+// Confirmed retainer revenue for 2026 + full pipeline deal value falling in 2026 months
+function calculateProjected2026Revenue() {
+  const months2026 = monthsBetween('2026-01', '2026-12');
+
+  const confirmedByClient = [];
+  let confirmedTotal = 0;
+  CLIENTS.forEach(c => {
+    let monthsCount = 0;
+    months2026.forEach(m => {
+      if (clientActiveInMonth(c, m)) monthsCount++;
+    });
+    if (monthsCount > 0) {
+      // Revenue precedence for the 2026 confirmed figure:
+      // 1. revenue2026 explicit override (for partial-year contracts that cross into 2027,
+      //    e.g. a prorated first month plus N full months — months × monthly cannot express this).
+      // 2. totalContractValue when the whole contract sits inside 2026 (irregular billing:
+      //    one-time fees + partial months).
+      // 3. months active in 2026 × monthly retainer.
+      const startsIn2026 = monthOf(c.startDate) >= '2026-01';
+      const endsIn2026 = monthOf(c.endDate) <= '2026-12';
+      const fullyIn2026 = startsIn2026 && endsIn2026;
+      let total, label;
+      if (c.revenue2026 !== undefined) {
+        total = c.revenue2026;
+        label = c.revenue2026Note || '2026 portion';
+      } else if (fullyIn2026 && c.totalContractValue !== undefined) {
+        total = c.totalContractValue;
+        label = c.revenue2026Note || 'fixed / total';
+      } else {
+        total = monthsCount * c.monthlyValue;
+        label = monthsCount + ' mo &times; $' + c.monthlyValue.toLocaleString();
+      }
+      confirmedByClient.push({ name: c.fullName, total, months: monthsCount, monthly: c.monthlyValue, label });
+      confirmedTotal += total;
+    }
+  });
+
+  const pipelineByOpp = [];
+  let pipelineTotal = 0;
+  PIPELINE.forEach(p => {
+    if (p.stage === 'closed-lost' || p.stage === 'closed-won') return;
+    if (!p.proposalStartDate || !p.proposalEndDate || !p.monthlyValue) return;
+    let monthsCount = 0;
+    months2026.forEach(m => {
+      if (m >= p.proposalStartDate && m <= p.proposalEndDate) monthsCount++;
+    });
+    if (monthsCount > 0) {
+      // If the whole proposed engagement falls inside 2026, use the full dealValue so fixed
+      // fees (e.g. a one-time Phase 1) are not dropped by the months × monthly shortcut.
+      // If it crosses into 2027, only the 2026 months count toward the 2026 figure.
+      const fullyIn2026 = p.proposalStartDate >= '2026-01' && p.proposalEndDate <= '2026-12';
+      const total = (fullyIn2026 && p.dealValue !== undefined)
+        ? p.dealValue
+        : monthsCount * p.monthlyValue;
+      const label = (fullyIn2026 && p.dealValue !== undefined)
+        ? 'full deal value'
+        : monthsCount + ' mo &times; $' + p.monthlyValue.toLocaleString();
+      pipelineByOpp.push({ name: p.fullName, total, months: monthsCount, monthly: p.monthlyValue, stage: p.stage, label });
+      pipelineTotal += total;
+    }
+  });
+
+  return { total: confirmedTotal + pipelineTotal, confirmedTotal, pipelineTotal, confirmedByClient, pipelineByOpp };
+}
+
+// ---- Summary Cards ----
+let activeSummaryPanel = null;
+
+function toggleSummaryDetail(panelId) {
+  const panel = document.getElementById('summaryDetailPanel');
+  const cards = document.querySelectorAll('.summary-card');
+
+  // If clicking the same card, close it
+  if (activeSummaryPanel === panelId) {
+    panel.classList.remove('open');
+    cards.forEach(c => c.classList.remove('expanded'));
+    activeSummaryPanel = null;
+    return;
+  }
+
+  activeSummaryPanel = panelId;
+  cards.forEach(c => c.classList.remove('expanded'));
+  document.querySelector(`[data-panel="${panelId}"]`).classList.add('expanded');
+
+  const currentMonth = monthKey(TODAY);
+  let html = '';
+
+  if (panelId === 'revenue') {
+    const activeClients = CLIENTS.filter(c => isClientActiveToday(c));
+    html = '<div class="detail-title">Active Engagements This Month</div><ul class="detail-list">';
+    activeClients.forEach(c => {
+      html += `<li>
+        <span><span class="detail-org">${c.fullName}</span><span class="detail-contact">${c.contact}</span></span>
+        <span class="detail-right">
+          <span class="detail-amount">$${c.monthlyValue.toLocaleString()}/mo</span>
+          <span class="detail-meta">ends ${monthLabel(c.endDate)}</span>
+        </span>
+      </li>`;
+    });
+    let total = 0;
+    activeClients.forEach(c => total += c.monthlyValue);
+    html += `<li style="font-weight:700; border-top:2px solid var(--periwinkle); padding-top:14px;">
+      <span class="detail-org">Total</span>
+      <span class="detail-amount">$${total.toLocaleString()}/mo</span>
+    </li>`;
+    html += '</ul>';
+  }
+
+  else if (panelId === 'ending') {
+    const parseEndDate = (c) => {
+      const ep = asFullEndDate(c.endDate).split('-');
+      return new Date(parseInt(ep[0]), parseInt(ep[1]) - 1, parseInt(ep[2]));
+    };
+    const endingClients = CLIENTS.filter(c => {
+      if (!needsRenewalAttention(c)) return false;
+      const endDate = parseEndDate(c);
+      const diffDays = (endDate - TODAY) / (1000 * 60 * 60 * 24);
+      return diffDays >= 0 && diffDays <= 60;
+    });
+    let atRisk = 0;
+    endingClients.forEach(c => atRisk += c.monthlyValue);
+    html = '<div class="detail-title">Contracts Ending Within 60 Days</div><ul class="detail-list">';
+    endingClients.forEach(c => {
+      const endDate = parseEndDate(c);
+      const diffDays = Math.round((endDate - TODAY) / (1000 * 60 * 60 * 24));
+      html += `<li>
+        <span><span class="detail-org">${c.fullName}</span><span class="detail-contact">${c.contact}</span></span>
+        <span class="detail-right">
+          <span class="detail-amount">$${c.monthlyValue.toLocaleString()}/mo</span>
+          <span class="detail-badge ending">${diffDays} days left</span>
+          <span class="renewal-badge ${c.renewalStatus}" style="font-size:10px; padding:2px 8px;">${c.renewalLabel}</span>
+        </span>
+      </li>`;
+    });
+    html += `<li style="font-weight:700; border-top:2px solid var(--periwinkle); padding-top:14px;">
+      <span class="detail-org">Monthly Revenue at Risk</span>
+      <span class="detail-amount" style="color:#d4380d;">$${atRisk.toLocaleString()}/mo</span>
+    </li>`;
+    html += '</ul>';
+  }
+
+  else if (panelId === 'pipeline') {
+    const activeOpps = PIPELINE.filter(p => p.stage !== 'closed-lost' && p.stage !== 'closed-won');
+    const stageLabels = { 'discovery': 'Discovery', 'proposal-sent': 'Proposal Sent', 'negotiation': 'Negotiation', 'verbal-commitment': 'Verbal Commit', 'contract-drafted': 'Contract Drafted' };
+    html = '<div class="detail-title">Active Pipeline Opportunities</div><ul class="detail-list">';
+    activeOpps.forEach(p => {
+      html += `<li>
+        <span>
+          <span class="detail-org">${p.fullName}</span>
+          ${p.contact ? '<span class="detail-contact">' + p.contact + '</span>' : ''}
+        </span>
+        <span class="detail-right">
+          <span class="detail-amount">$${p.dealValue.toLocaleString()}</span>
+          <span class="detail-meta">${p.monthlyValue ? '$' + p.monthlyValue.toLocaleString() + '/mo' : ''} ${p.duration ? '&middot; ' + p.duration : ''}</span>
+          <span class="detail-badge pipeline-stage">${stageLabels[p.stage] || p.stage}</span>
+        </span>
+      </li>`;
+    });
+    let totalPipeline = 0;
+    activeOpps.forEach(p => totalPipeline += p.dealValue);
+    html += `<li style="font-weight:700; border-top:2px solid var(--periwinkle); padding-top:14px;">
+      <span class="detail-org">Total Pipeline</span>
+      <span class="detail-amount">$${totalPipeline.toLocaleString()}</span>
+    </li>`;
+    html += '</ul>';
+  }
+
+  else if (panelId === 'projected') {
+    const proj = calculateProjected2026Revenue();
+    const stageLabels = { 'discovery': 'Discovery', 'proposal-sent': 'Proposal Sent', 'negotiation': 'Negotiation', 'verbal-commitment': 'Verbal Commit', 'contract-drafted': 'Contract Drafted' };
+    html = '<div class="detail-title">Projected 2026 Revenue Breakdown</div><ul class="detail-list">';
+    html += `<li style="padding-top:6px;">
+      <span class="detail-org" style="color:var(--blueberry); text-transform:uppercase; letter-spacing:0.5px; font-size:12px;">Confirmed Engagements</span>
+      <span class="detail-amount">$${proj.confirmedTotal.toLocaleString()}</span>
+    </li>`;
+    proj.confirmedByClient.forEach(c => {
+      html += `<li style="padding-left:16px;">
+        <span><span class="detail-org">${c.name}</span></span>
+        <span class="detail-right">
+          <span class="detail-meta">${c.label || (c.months + ' mo &times; $' + c.monthly.toLocaleString())}</span>
+          <span class="detail-amount">$${c.total.toLocaleString()}</span>
+        </span>
+      </li>`;
+    });
+    html += `<li style="padding-top:14px;">
+      <span class="detail-org" style="color:var(--blueberry); text-transform:uppercase; letter-spacing:0.5px; font-size:12px;">Pipeline (Full Deal Value)</span>
+      <span class="detail-amount">$${proj.pipelineTotal.toLocaleString()}</span>
+    </li>`;
+    proj.pipelineByOpp.forEach(p => {
+      html += `<li style="padding-left:16px;">
+        <span><span class="detail-org">${p.name}</span></span>
+        <span class="detail-right">
+          <span class="detail-meta">${p.label || (p.months + ' mo &times; $' + p.monthly.toLocaleString())}</span>
+          <span class="detail-amount">$${p.total.toLocaleString()}</span>
+          <span class="detail-badge pipeline-stage">${stageLabels[p.stage] || p.stage}</span>
+        </span>
+      </li>`;
+    });
+    html += `<li style="font-weight:700; border-top:2px solid var(--periwinkle); padding-top:14px;">
+      <span class="detail-org">Total Projected 2026</span>
+      <span class="detail-amount">$${proj.total.toLocaleString()}</span>
+    </li>`;
+    html += '</ul>';
+  }
+
+  else if (panelId === 'weighted') {
+    const activeOpps = PIPELINE.filter(p => p.stage !== 'closed-lost' && p.stage !== 'closed-won');
+    const stageLabels = { 'discovery': 'Discovery', 'proposal-sent': 'Proposal Sent', 'negotiation': 'Negotiation', 'verbal-commitment': 'Verbal Commit', 'contract-drafted': 'Contract Drafted' };
+    html = '<div class="detail-title">Probability-Adjusted Pipeline Value</div><ul class="detail-list">';
+    activeOpps.forEach(p => {
+      const weighted = Math.round(p.dealValue * (p.probability / 100));
+      html += `<li>
+        <span>
+          <span class="detail-org">${p.fullName}</span>
+          <span class="detail-contact">${p.probability}% probability</span>
+        </span>
+        <span class="detail-right">
+          <span class="detail-meta" style="text-decoration:line-through; opacity:0.5;">$${p.dealValue.toLocaleString()}</span>
+          <span class="detail-amount">$${weighted.toLocaleString()}</span>
+          <span class="detail-badge pipeline-stage">${stageLabels[p.stage] || p.stage}</span>
+        </span>
+      </li>`;
+    });
+    let totalWeighted = 0;
+    activeOpps.forEach(p => totalWeighted += Math.round(p.dealValue * (p.probability / 100)));
+    html += `<li style="font-weight:700; border-top:2px solid var(--periwinkle); padding-top:14px;">
+      <span class="detail-org">Weighted Total</span>
+      <span class="detail-amount">$${totalWeighted.toLocaleString()}</span>
+    </li>`;
+    html += '</ul>';
+  }
+
+  panel.innerHTML = html;
+  // Force reflow then open
+  panel.classList.remove('open');
+  void panel.offsetHeight;
+  panel.classList.add('open');
+}
+
+function renderSummary() {
+  const container = document.getElementById('summaryRow');
+  const currentMonth = monthKey(TODAY);
+
+  // YTD revenue (cash basis, synced from Xero by sync_ytd_revenue.py)
+  const ytd = (typeof YTD_REVENUE === 'object' && YTD_REVENUE) ? YTD_REVENUE : null;
+  let ytdAmount = ytd && typeof ytd.amount === 'number' ? ytd.amount : null;
+  let ytdAsOfLabel = '';
+  if (ytd && ytd.asOf) {
+    const d = new Date(ytd.asOf);
+    if (!isNaN(d)) {
+      ytdAsOfLabel = 'As of ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+  }
+  const ytdYear = ytd && ytd.year ? ytd.year : TODAY.getFullYear();
+
+  // Current monthly revenue
+  let currentRevenue = 0;
+  const activeClients = CLIENTS.filter(c => isClientActiveToday(c));
+  activeClients.forEach(c => currentRevenue += c.monthlyValue);
+
+  // Contracts ending within 60 days
+  const endingClients = CLIENTS.filter(c => {
+    if (!needsRenewalAttention(c)) return false;
+    const ep = asFullEndDate(c.endDate).split('-');
+    const endDate = new Date(parseInt(ep[0]), parseInt(ep[1]) - 1, parseInt(ep[2]));
+    const diffDays = (endDate - TODAY) / (1000 * 60 * 60 * 24);
+    return diffDays >= 0 && diffDays <= 60;
+  });
+
+  // Pipeline value
+  let pipelineValue = 0;
+  const activeOpps = PIPELINE.filter(p => p.stage !== 'closed-lost' && p.stage !== 'closed-won');
+  activeOpps.forEach(p => pipelineValue += p.dealValue);
+
+  // Weighted pipeline
+  let weightedPipeline = 0;
+  activeOpps.forEach(p => weightedPipeline += p.dealValue * (p.probability / 100));
+
+  // Projected 2026 revenue (confirmed + full pipeline, both filtered to 2026 months)
+  const projected = calculateProjected2026Revenue();
+
+  const ytdCardHTML = `
+    <div class="summary-card">
+      <div class="label">Revenue YTD ${ytdYear}</div>
+      <div class="value">${ytdAmount !== null ? '$' + Math.round(ytdAmount).toLocaleString() : '—'}</div>
+      <div class="sub">${ytdAmount !== null ? 'Cash basis · LPM Consulting' : 'Awaiting first Xero sync'}</div>
+      <div class="expand-hint">${ytdAsOfLabel || 'Synced weekly from Xero'}</div>
+    </div>
+  `;
+
+  container.innerHTML = `
+    ${ytdCardHTML}
+    <div class="summary-card" data-panel="projected" onclick="toggleSummaryDetail('projected')">
+      <div class="label">Projected 2026 Revenue</div>
+      <div class="value">$${Math.round(projected.total).toLocaleString()}</div>
+      <div class="sub">Confirmed + full pipeline</div>
+      <div class="expand-hint">Click for details</div>
+    </div>
+    <div class="summary-card" data-panel="revenue" onclick="toggleSummaryDetail('revenue')">
+      <div class="label">Current Monthly Revenue</div>
+      <div class="value">$${currentRevenue.toLocaleString()}</div>
+      <div class="sub">${activeClients.length} active engagements</div>
+      <div class="expand-hint">Click for details</div>
+    </div>
+    <div class="summary-card ${endingClients.length > 0 ? 'alert' : ''}" data-panel="ending" onclick="toggleSummaryDetail('ending')">
+      <div class="label">Ending in 60 Days</div>
+      <div class="value">${endingClients.length}</div>
+      <div class="sub">${endingClients.length > 0 ? 'Renewal conversations needed' : 'No urgency'}</div>
+      <div class="expand-hint">Click for details</div>
+    </div>
+    <div class="summary-card" data-panel="pipeline" onclick="toggleSummaryDetail('pipeline')">
+      <div class="label">Pipeline Value</div>
+      <div class="value">$${pipelineValue.toLocaleString()}</div>
+      <div class="sub">${activeOpps.length} active opportunities</div>
+      <div class="expand-hint">Click for details</div>
+    </div>
+    <div class="summary-card" data-panel="weighted" onclick="toggleSummaryDetail('weighted')">
+      <div class="label">Weighted Pipeline</div>
+      <div class="value">$${Math.round(weightedPipeline).toLocaleString()}</div>
+      <div class="sub">Probability-adjusted value</div>
+      <div class="expand-hint">Click for details</div>
+    </div>
+  `;
+}
+
+// ---- Gantt Chart ----
+function renderGantt() {
+  const table = document.getElementById('ganttTable');
+  const months = getGanttMonths();
+  const currentMonth = monthKey(TODAY);
+
+  // Header
+  let headerHTML = '<thead><tr>';
+  headerHTML += '<th class="frozen frozen-client">Client</th>';
+  headerHTML += '<th class="frozen frozen-monthly">Monthly</th>';
+  headerHTML += '<th class="frozen frozen-renewal">Renewal</th>';
+  months.forEach(m => {
+    const isCurrent = m === currentMonth;
+    headerHTML += `<th class="month-col" style="${isCurrent ? 'background:rgba(223,255,0,0.25);' : ''}">${monthLabel(m)}</th>`;
+  });
+  headerHTML += '</tr></thead>';
+
+  // Rows
+  let bodyHTML = '<tbody>';
+  CLIENTS.forEach(client => {
+    bodyHTML += '<tr>';
+    bodyHTML += `<td class="frozen frozen-client client-name">${client.name}</td>`;
+    bodyHTML += `<td class="frozen frozen-monthly client-revenue">$${client.monthlyValue.toLocaleString()}</td>`;
+    bodyHTML += `<td class="frozen frozen-renewal"><span class="renewal-badge ${client.renewalStatus}">${client.renewalLabel}</span></td>`;
+
+    months.forEach(m => {
+      const isCurrent = m === currentMonth;
+      const isActive = clientActiveInMonth(client, m);
+      const isEndMonth = m === monthOf(client.endDate);
+      const bgStyle = isCurrent ? 'background:rgba(223,255,0,0.18);' : '';
+
+      if (isActive) {
+        let barClass = 'active';
+        if (client.renewalStatus === 'winding-down') barClass = 'winding-down';
+        if (isEndMonth) barClass = client.renewalStatus === 'verbal-commitment' ? 'continuing' : 'ending';
+        bodyHTML += `<td class="month-cell" style="${bgStyle}"><div class="gantt-bar ${barClass}"
+          onmouseenter="showTooltip(event, '${client.fullName}\\n${monthLabel(m)}: $${client.monthlyValue.toLocaleString()}\\n${client.notes}')"
+          onmouseleave="hideTooltip()"
+        ></div></td>`;
+      } else {
+        bodyHTML += `<td class="month-cell" style="${bgStyle}"></td>`;
+      }
+    });
+
+    bodyHTML += '</tr>';
+  });
+  bodyHTML += '</tbody>';
+
+  table.innerHTML = headerHTML + bodyHTML;
+}
+
+// ---- Pipeline Board ----
+function renderPipeline() {
+  const board = document.getElementById('pipelineBoard');
+  let html = '';
+
+  BD_STAGES.forEach(stage => {
+    const prospects = PIPELINE.filter(p => p.stage === stage.id);
+    html += `<div class="pipeline-column">
+      <div class="pipeline-column-header">${stage.label}</div>`;
+
+    if (prospects.length === 0) {
+      html += '<div class="pipeline-empty">No prospects</div>';
+    } else {
+      prospects.forEach(p => {
+        html += `<div class="pipeline-card">
+          <div class="org-name">${p.name}</div>
+          <div class="deal-value">$${p.dealValue.toLocaleString()} total</div>
+          <div class="deal-detail">${p.monthlyValue ? '$' + p.monthlyValue.toLocaleString() + '/mo' : ''} ${p.duration ? '&middot; ' + p.duration : ''}</div>
+          ${p.scopeSummary ? `<div class="deal-detail">${p.scopeSummary}</div>` : ''}
+          <div class="probability">${p.probability}% probability</div>
+        </div>`;
+      });
+    }
+
+    html += '</div>';
+  });
+
+  board.innerHTML = html;
+}
+
+// ---- Revenue Forecast ----
+function renderForecast() {
+  const container = document.getElementById('chartBars');
+  const months = getForecastMonths();
+
+  // Calculate revenue per month
+  const monthData = months.map(m => {
+    let confirmed = 0;
+    let pipeline = 0;
+    let potential = 0;
+
+    CLIENTS.forEach(c => {
+      if (clientActiveInMonth(c, m)) {
+        confirmed += c.monthlyValue;
+      }
+    });
+
+    PIPELINE.forEach(p => {
+      if (p.stage === 'closed-lost') return;
+      // Proposals with defined terms → pipeline (solid cornflower)
+      if (p.proposalSent && p.proposalStartDate && p.proposalEndDate) {
+        if (m >= p.proposalStartDate && m <= p.proposalEndDate) {
+          pipeline += p.monthlyValue;
+        }
+      }
+      // BD prospects without sent proposals → potential (mint, dashed)
+      // Show them starting from their estimated start or current month, for estimated duration
+      else if (!p.proposalSent && p.monthlyValue > 0) {
+        const estStart = p.proposalStartDate || m; // if no start date, show from current month onward
+        // Estimate 12 months if no end date
+        const estEndDate = p.proposalEndDate || (() => {
+          const [sy, sm] = (p.proposalStartDate || monthKey(TODAY)).split('-').map(Number);
+          let ey = sy, em = sm + 11;
+          if (em > 12) { ey += Math.floor(em / 12); em = em % 12 || 12; }
+          return ey + '-' + String(em).padStart(2, '0');
+        })();
+        if (p.proposalStartDate && m >= p.proposalStartDate && m <= estEndDate) {
+          potential += p.monthlyValue;
+        } else if (!p.proposalStartDate && m >= monthKey(TODAY)) {
+          potential += p.monthlyValue;
+        }
+      }
+    });
+
+    return { month: m, confirmed, pipeline, potential, total: confirmed + pipeline + potential };
+  });
+
+  const maxValue = Math.max(...monthData.map(d => d.total), 1);
+  const chartHeight = 280;
+
+  // Gridlines — auto-scale
+  const gridStep = maxValue > 80000 ? 20000 : 10000;
+  const gridlineValues = [];
+  for (let v = gridStep; v <= maxValue * 1.05; v += gridStep) { gridlineValues.push(v); }
+  let gridHTML = '<div class="chart-gridlines">';
+  gridlineValues.forEach(v => {
+    const bottom = (v / (maxValue * 1.15)) * chartHeight;
+    gridHTML += `<div class="chart-gridline" style="bottom:${bottom}px">
+      <span class="chart-gridline-label">$${(v/1000).toFixed(0)}k</span>
+    </div>`;
+  });
+  gridHTML += '</div>';
+
+  let barsHTML = '';
+  monthData.forEach(d => {
+    const scale = maxValue * 1.15;
+    const confirmedHeight = (d.confirmed / scale) * chartHeight;
+    const pipelineHeight = (d.pipeline / scale) * chartHeight;
+    const potentialHeight = (d.potential / scale) * chartHeight;
+
+    barsHTML += `<div class="chart-bar-group">
+      <div class="chart-value-label">$${(d.total / 1000).toFixed(0)}k</div>
+      <div class="chart-bar-stack"
+        onmouseenter="showTooltip(event, '${monthLabel(d.month)}\\nConfirmed: $${d.confirmed.toLocaleString()}\\nPipeline: $${d.pipeline.toLocaleString()}\\nBD Potential: $${d.potential.toLocaleString()}\\nTotal: $${d.total.toLocaleString()}')"
+        onmouseleave="hideTooltip()">
+        ${d.potential > 0 ? `<div class="chart-bar-segment potential" style="height:${potentialHeight}px"></div>` : ''}
+        ${d.pipeline > 0 ? `<div class="chart-bar-segment pipeline" style="height:${pipelineHeight}px"></div>` : ''}
+        <div class="chart-bar-segment confirmed" style="height:${confirmedHeight}px"></div>
+      </div>
+      <div class="chart-month-label">${monthLabel(d.month)}</div>
+    </div>`;
+  });
+
+  container.innerHTML = gridHTML + barsHTML;
+  container.style.paddingLeft = '50px';
+}
+
+// ---- Tooltip ----
+function showTooltip(event, text) {
+  const tooltip = document.getElementById('tooltip');
+  tooltip.innerHTML = text.replace(/\\n/g, '<br>');
+  tooltip.classList.add('visible');
+  const x = Math.min(event.clientX + 12, window.innerWidth - 300);
+  const y = event.clientY - 10;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+function hideTooltip() {
+  document.getElementById('tooltip').classList.remove('visible');
+}
+
+// ---- Init ----
+// Defer one tick. When this page is StaticCrypt-encrypted, the decrypted HTML is
+// written into the document after the original load, and a bare loadData() call
+// fires while that rewrite is still settling, so the render targets are not yet
+// queryable. setTimeout(0) runs loadData after the write cycle completes, which
+// works in both the encrypted page and the raw local-dev template.
+setTimeout(loadData, 0);
+</script>
+
+</body>
+</html>

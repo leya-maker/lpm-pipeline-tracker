@@ -63,7 +63,7 @@ def update_data_json(payload: dict) -> tuple[float | None, float | None]:
 
 def git_commit_and_push(previous: float | None, new: float | None) -> None:
     if previous == new:
-        print("[{}] No change ($ {:,.2f}) — skipping commit.".format(
+        print("[{}] No change ($ {:,.2f}) — skipping deploy.".format(
             datetime.now().isoformat(timespec="seconds"),
             new or 0,
         ))
@@ -76,13 +76,16 @@ def git_commit_and_push(previous: float | None, new: float | None) -> None:
 
     message = "Sync YTD revenue: ${:,.2f}{}".format(new or 0, delta_note)
 
-    subprocess.run(["git", "add", "data.json"], cwd=str(REPO), check=True)
+    # data.json is gitignored (it holds client names and contract values), so we
+    # never commit it. rebuild_pipeline.py bakes the fresh data.json into the
+    # StaticCrypt-encrypted index.html and pushes that instead.
+    rebuild = REPO / "scripts" / "rebuild_pipeline.py"
     subprocess.run(
-        ["git", "commit", "-m", message + "\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"],
+        [sys.executable, str(rebuild), "--message",
+         message + "\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>"],
         cwd=str(REPO),
         check=True,
     )
-    subprocess.run(["git", "push"], cwd=str(REPO), check=True)
     print("[{}] {}".format(datetime.now().isoformat(timespec="seconds"), message))
 
 
